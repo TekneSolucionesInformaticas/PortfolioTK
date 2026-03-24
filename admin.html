@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin | TEKNÉ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        :root { --adm-bg: #05070D; --adm-card: #0B0F1A; --adm-red: #7F1D1D; }
+        body { background: var(--adm-bg); font-family: 'Inter'; color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        .adm-side { width: 320px; background: var(--adm-card); border-right: 1px solid rgba(255,255,255,0.05); padding: 3rem 2rem; display: flex; flex-direction: column; }
+        .adm-logo { font-family: 'Space Grotesk'; font-size: 1.5rem; letter-spacing: 0.2em; text-align: center; margin-bottom: 4rem; color: var(--adm-red); }
+        .adm-nav-item { padding: 1.25rem; border-radius: 12px; cursor: pointer; color: var(--text-muted); margin-bottom: 0.5rem; transition: 0.3s; font-size: 0.85rem; letter-spacing: 0.1em; }
+        .adm-nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .adm-nav-item.active { background: var(--adm-red); color: white; font-weight: 600; box-shadow: 0 10px 20px rgba(127, 29, 29, 0.2); }
+
+        /* Main Area */
+        .adm-main { flex: 1; padding: 5rem; overflow-y: auto; background: var(--adm-bg); scroll-behavior: smooth; }
+        .adm-section { max-width: 1000px; margin: 0 auto; display: none; animation: fadeIn 0.4s ease; }
+        .adm-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Cards & Form */
+        .adm-card { background: var(--adm-card); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 3rem; }
+        label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--adm-red); letter-spacing: 0.2em; margin-bottom: 1rem; margin-top: 2rem; }
+        input[type="text"], textarea { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; color: white; border-radius: 12px; font-size: 1rem; }
+        textarea { height: 15rem; resize: vertical; }
+
+        /* Multi-Image Grid */
+        .img-edit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .img-edit-box { background: #000; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; border-radius: 15px; text-align: center; }
+        .img-edit-box img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; cursor: pointer; }
+        .img-edit-box input[type="file"] { display: none; }
+
+        .btn-main { background: var(--adm-red); border: none; padding: 1.5rem 3rem; color: white; border-radius: 50px; font-family: 'Space Grotesk'; text-transform: uppercase; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 2rem; }
+        .btn-main:hover { transform: scale(1.03); box-shadow: 0 15px 35px rgba(127, 29, 29, 0.4); }
+
+        .project-list-grid { display: grid; gap: 1rem; }
+        .project-row { background: var(--adm-card); padding: 1.5rem 2rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .project-row:hover { border-color: var(--adm-red); transform: translateX(10px); }
+
+        .login-box { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="loginGate" class="login-box">
+        <div class="adm-card" style="width: 400px; text-align: center;">
+            <h2 class="adm-logo">TEKNÉ ADMIN</h2>
+            <input type="password" id="pass" placeholder="Contraseña">
+            <button class="btn-main" onclick="doLogin()">ENTRAR</button>
+        </div>
+    </div>
+
+    <aside class="adm-side hidden" id="aside">
+        <div class="adm-logo">TEKNÉ</div>
+        <div class="adm-nav-item active" onclick="nav('home')">PÁGINA INICIO</div>
+        <div class="adm-nav-item" onclick="nav('services')">SERVICIOS</div>
+        <div class="adm-nav-item" onclick="nav('projects')">PROYECTOS & CASOS</div>
+        
+        <div style="margin-top: auto;">
+            <button class="btn-main" onclick="saveAll()">GUARDAR TODO</button>
+            <a href="index.html" style="display: block; text-align: center; margin-top: 2rem; color: var(--text-muted); font-size: 0.8rem;">← Volver al sitio</a>
+        </div>
+    </aside>
+
+    <main class="adm-main hidden" id="main">
+        
+        <!-- HOME -->
+        <div id="sec-home" class="adm-section active">
+            <h1>Editar Inicio</h1>
+            <div class="adm-card">
+                <label>Título (Logo)</label><input type="text" id="h-title">
+                <label>Lema (Tagline)</label><input type="text" id="h-tagline">
+                <label>Subtítulo</label><input type="text" id="h-subtitle">
+            </div>
+        </div>
+
+        <!-- SERVICES -->
+        <div id="sec-services" class="adm-section">
+            <h1>Editar Servicios</h1>
+            <div id="serv-list"></div>
+            <button class="adm-nav-item" style="border: 1px dashed white; width: 100%;" onclick="addS()">+ AGREGAR SERVICIO</button>
+        </div>
+
+        <!-- PROJECTS -->
+        <div id="sec-projects" class="adm-section">
+            <h1>Proyectos & Casos</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">Selecciona un proyecto para editar todas sus imágenes e información interna.</p>
+            <div id="proj-list-grid" class="project-list-grid"></div>
+            <button class="adm-nav-item" style="border: 1px dashed white; width: 100%; margin-top: 2rem;" onclick="addP()">+ AGREGAR NUEVO PROYECTO</button>
+        </div>
+
+        <!-- PROJECT DETAIL EDITOR (MODAL SIMULATION) -->
+        <div id="sec-p-detail" class="adm-section">
+            <button onclick="nav('projects')" style="background: none; border: none; color: var(--adm-red); cursor: pointer; margin-bottom: 2rem;">← VOLVER A LISTA</button>
+            <h1 id="pd-name">EDITAR CASO</h1>
+            
+            <div class="adm-card">
+                <label>Nombre del Proyecto</label><input type="text" id="pd-title">
+                <label>Categoría</label><input type="text" id="pd-cat">
+                
+                <h2 style="margin-top: 4rem;">IMÁGENES DEL CASO (Haz clic en la imagen para cambiarla)</h2>
+                <div class="img-edit-grid" id="pd-gallery">
+                    <!-- Se llena vía JS -->
+                </div>
+
+                <h2 style="margin-top: 4rem;">CONTENIDO ESCRITO</h2>
+                <label>El Desafío (Explicación)</label>
+                <textarea id="pd-challenge"></textarea>
+                <label>La Solución (Explicación)</label>
+                <textarea id="pd-solution"></textarea>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div><label>Métrica 1 (Valor)</label><input type="text" id="pd-m1v"></div>
+                    <div><label>Métrica 1 (Texto)</label><input type="text" id="pd-m1l"></div>
+                    <div><label>Métrica 2 (Valor)</label><input type="text" id="pd-m2v"></div>
+                    <div><label>Métrica 2 (Texto)</label><input type="text" id="pd-m2l"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const assetsBase = ["img/remitos.png", "img/app-movil.png", "img/hero-bg.png"];
+        const defaultData = {
+            home: { title: "TEKNÉ", tagline: "SOLUCIONES TECNOLÓGICAS", subtitle: "SOFTWARE EXCLUSIVO PARA EMPRESAS" },
+            services: [
+                { name: "DESARROLLO WEB PREMIUM", desc: "Sitios de alto rendimiento...", img: "img/hero-bg.png" },
+                { name: "APLICACIONES MÓVILES", desc: "Apps robustas Android/iOS...", img: "img/app-movil.png" }
+            ],
+            projects: [
+                { id: "remitos", name: "SISTEMA DE REMITOS", cat: "LOGÍSTICA", 
+                  imgs: ["img/remitos.png", "img/hero-bg.png", "img/app-movil.png"],
+                  challenge: "Digitalizar flujo logístico físico...", 
+                  solution: "Implementación PWA Cloud Sync...",
+                  m1: ["-100%", "PAPEL"], m2: ["0.2s", "SYNC"] 
+                },
+                { id: "app-movil", name: "APP MÓVIL CORPORATIVA", cat: "FIELD OPS", 
+                  imgs: ["img/app-movil.png", "img/remitos.png", "img/hero-bg.png"],
+                  challenge: "Equipos de campo sin conectividad...", 
+                  solution: "React Native Offline Experience...",
+                  m1: ["+65%", "EFICIENCIA"], m2: ["LIVE", "DATA"] 
+                }
+            ]
+        };
+
+        let db = JSON.parse(localStorage.getItem('tekne_v3')) || defaultData;
+        let editingP = null;
+
+        function doLogin() {
+            if(document.getElementById('pass').value === 'tekne2026') {
+                document.getElementById('loginGate').remove();
+                document.getElementById('aside').classList.remove('hidden');
+                document.getElementById('main').classList.remove('hidden');
+                initFields();
+            }
+        }
+
+        function nav(sec) {
+            document.querySelectorAll('.adm-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.adm-nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('sec-' + sec).classList.add('active');
+            // Find active nav item and mark it
+            const items = document.querySelectorAll('.adm-nav-item');
+            items.forEach(i => { if(i.innerText.includes(sec.toUpperCase())) i.classList.add('active'); });
+        }
+
+        function initFields() {
+            document.getElementById('h-title').value = db.home.title;
+            document.getElementById('h-tagline').value = db.home.tagline;
+            document.getElementById('h-subtitle').value = db.home.subtitle;
+            renderServs();
+            renderProjs();
+        }
+
+        function renderServs() {
+            const list = document.getElementById('serv-list');
+            list.innerHTML = db.services.map((s, i) => `
+                <div class="adm-card">
+                    <label>Nombre del Servicio</label><input type="text" value="${s.name}" onchange="db.services[${i}].name=this.value">
+                    <label>Imagen</label>
+                    <div class="img-edit-box">
+                        <img src="${s.img}" onclick="this.nextElementSibling.click()">
+                        <input type="file" onchange="hdlImg(this, (url)=> {db.services[${i}].img=url; renderServs()})">
+                        <small>Haz clic arriba para subir nueva imagen</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProjs() {
+            const list = document.getElementById('proj-list-grid');
+            list.innerHTML = db.projects.map((p, i) => `
+                <div class="project-row" onclick="openP(${i})">
+                    <span>${p.name} — ${p.cat}</span>
+                    <span style="color: var(--adm-red);">Editar Caso ↗</span>
+                </div>
+            `).join('');
+        }
+
+        function openP(i) {
+            editingP = i;
+            const p = db.projects[i];
+            nav('p-detail');
+            document.getElementById('pd-title').value = p.name;
+            document.getElementById('pd-cat').value = p.cat;
+            document.getElementById('pd-challenge').value = p.challenge;
+            document.getElementById('pd-solution').value = p.solution;
+            document.getElementById('pd-m1v').value = p.m1[0];
+            document.getElementById('pd-m1l').value = p.m1[1];
+            document.getElementById('pd-m2v').value = p.m2[0];
+            document.getElementById('pd-m2l').value = p.m2[1];
+            
+            const gall = document.getElementById('pd-gallery');
+            gall.innerHTML = p.imgs.map((url, idx) => `
+                <div class="img-edit-box">
+                    <label>Imagen ${idx+1}</label>
+                    <img src="${url}" onclick="this.nextElementSibling.click()">
+                    <input type="file" onchange="hdlImg(this, (res)=> {db.projects[editingP].imgs[${idx}]=res; openP(editingP)})">
+                </div>
+            `).join('');
+        }
+
+        // Handle Image Upload (Base64)
+        function hdlImg(input, cb) {
+            const reader = new FileReader();
+            if(input.files[0]) {
+                reader.onload = (e) => cb(e.target.result);
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function addS() { db.services.push({name:'NUEVO', desc:'', img: assetsBase[0]}); renderServs(); }
+        function addP() { db.projects.push({...defaultData.projects[0], id: 'p-'+Date.now()}); renderProjs(); }
+
+        function saveAll() {
+            db.home.title = document.getElementById('h-title').value;
+            db.home.tagline = document.getElementById('h-tagline').value;
+            db.home.subtitle = document.getElementById('h-subtitle').value;
+            
+            if(editingP !== null) {
+                const p = db.projects[editingP];
+                p.name = document.getElementById('pd-title').value;
+                p.cat = document.getElementById('pd-cat').value;
+                p.challenge = document.getElementById('pd-challenge').value;
+                p.solution = document.getElementById('pd-solution').value;
+                p.m1 = [document.getElementById('pd-m1v').value, document.getElementById('pd-m1l').value];
+                p.m2 = [document.getElementById('pd-m2v').value, document.getElementById('pd-m2l').value];
+            }
+
+            localStorage.setItem('tekne_v3', JSON.stringify(db));
+            alert("¡Cambios totales guardados! El sitio se ha actualizado.");
+        }
+    </script>
+</body>
+</html>

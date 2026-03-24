@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Móvil Corporativa | Casos | TEKNÉ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%237F1D1D%22 rx=%2210%22/><text y=%22.85em%22 x=%22.1em%22 font-size=%2260%22 font-family=%22Space+Grotesk%22 font-weight=%22700%22 fill=%22white%22>T</text></svg>">
+</head>
+<body>
+
+    <div class="vignette"></div>
+
+    <header class="hero-top-nav">
+        <a href="../servicios.html" class="hero-nav-item">SERVICIOS</a>
+        <a href="../proyectos.html" class="hero-nav-item">PROYECTOS</a>
+        <a href="../index.html" class="hero-logo">TEKNÉ</a>
+        <a href="../contacto.html" class="hero-nav-item" style="color: var(--primary); font-weight: 600;">CONSULTA GRATIS</a>
+    </header>
+
+    <!-- CASE HERO -->
+    <header class="container-large case-hero">
+        <a href="../proyectos.html" class="hero-nav-item" style="display: block; margin-bottom: 3rem; color: var(--text-dim);">← Volver a Proyectos</a>
+        <h1 class="hero-title reveal-text" style="font-size: clamp(3rem, 10vw, 7rem);">
+            <span style="transition-delay: 0.1s;">APP MÓVIL CORPORATIVA</span>
+        </h1>
+        <p class="text-muted" style="max-width: 700px; margin-top: 3rem; font-size: 1.5rem;">Control operativo y gestión de campo desde dispositivos nativos.</p>
+    </header>
+
+    <main class="container-large">
+        
+        <!-- FIRST GRID: Desafío -->
+        <section class="case-grid">
+            <div class="case-sidebar">
+                <h3>CONTEXTO</h3>
+                <p class="text-dim">Operaciones en Campo</p>
+                <p class="text-dim">Android & iOS</p>
+                <p class="text-dim">Sync Offline</p>
+            </div>
+            <div class="case-content" data-reveal>
+                <h2>El Desafío de la Movilidad</h2>
+                <p>Equipos de trabajo en áreas remotas luchaban con formularios manuales que requerían una carga posterior lenta al final del día. No existía comunicación directa entre las tareas realizadas en campo y la gestión administrativa central.</p>
+                <ul>
+                    <li>Duplicidad de tareas en carga de datos.</li>
+                    <li>Falta de validación de información en el sitio.</li>
+                    <li>Saturación de canales de comunicación telefónica.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section class="case-gallery">
+            <div class="case-image-large" data-reveal>
+                <img src="../img/app-movil.png" alt="App UI">
+            </div>
+            <div class="case-image-small" data-reveal style="transition-delay: 0.2s;">
+                <img src="../img/hero-bg.png" alt="Arquitectura Native">
+            </div>
+            <div class="case-image-small" data-reveal style="transition-delay: 0.4s;">
+                <img src="../img/remitos.png" alt="Integración Dashboard">
+            </div>
+        </section>
+
+        <!-- SECOND GRID: Solución -->
+        <section class="case-grid" style="margin-top: 5rem;">
+            <div class="case-sidebar">
+                <h3>SOLUCIÓN</h3>
+            </div>
+            <div class="case-content" data-reveal>
+                <h2>React Native & Cloud First</h2>
+                <p>Nuestra solución integró una aplicación nativa multiplataforma con capacidades offline inteligentes. El sistema guarda la información localmente cuando no hay señal y sincroniza de forma transparente al recuperar la conectividad.</p>
+                <div class="case-metrics">
+                    <div class="metric-card">
+                        <span class="metric-value">+65%</span>
+                        <span class="metric-label">Eficiencia en campo</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">Real-Time</span>
+                        <span class="metric-label">Reportes ejecutivos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
