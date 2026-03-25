@@ -21,31 +21,30 @@
 
         /* Main Area */
         .adm-main { flex: 1; padding: 5rem; overflow-y: auto; background: var(--adm-bg); scroll-behavior: smooth; }
-        .adm-section { max-width: 1000px; margin: 0 auto; display: none; animation: fadeIn 0.4s ease; }
+        .adm-section { max-width: 1000px; margin: 0 auto; display: none; }
         .adm-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Cards & Form */
-        .adm-card { background: var(--adm-card); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 3rem; }
+        .adm-card { background: var(--adm-card); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 3rem; position: relative;}
         label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--adm-red); letter-spacing: 0.2em; margin-bottom: 1rem; margin-top: 2rem; }
-        input[type="text"], textarea { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; color: white; border-radius: 12px; font-size: 1rem; }
-        textarea { height: 15rem; resize: vertical; }
+        input[type="text"], textarea { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; color: white; border-radius: 12px; font-size: 1rem; font-family: inherit; }
+        textarea { height: 10rem; }
 
-        /* Multi-Image Grid */
         .img-edit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 2rem; margin-top: 2rem; }
         .img-edit-box { background: #000; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; border-radius: 15px; text-align: center; }
         .img-edit-box img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; cursor: pointer; }
         .img-edit-box input[type="file"] { display: none; }
 
         .btn-main { background: var(--adm-red); border: none; padding: 1.5rem 3rem; color: white; border-radius: 50px; font-family: 'Space Grotesk'; text-transform: uppercase; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 2rem; }
-        .btn-main:hover { transform: scale(1.03); box-shadow: 0 15px 35px rgba(127, 29, 29, 0.4); }
+        .btn-main:hover { transform: scale(1.02); box-shadow: 0 15px 35px rgba(127, 29, 29, 0.4); }
 
-        .project-list-grid { display: grid; gap: 1rem; }
-        .project-row { background: var(--adm-card); padding: 1.5rem 2rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .project-row:hover { border-color: var(--adm-red); transform: translateX(10px); }
+        .project-row { background: var(--adm-card); padding: 1.5rem 2rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; margin-bottom: 1rem; }
+        .project-row:hover { border-color: var(--adm-red); }
 
         .login-box { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
         .hidden { display: none !important; }
+        .danger-btn { color: #555; font-size: 0.7rem; background: none; border: none; cursor: pointer; margin-top: 1rem; }
+        .danger-btn:hover { color: red; }
     </style>
 </head>
 <body>
@@ -60,12 +59,12 @@
 
     <aside class="adm-side hidden" id="aside">
         <div class="adm-logo">TEKNÉ</div>
-        <div class="adm-nav-item active" onclick="nav('home')">PÁGINA INICIO</div>
+        <div class="adm-nav-item active" onclick="nav('home')">INICIO</div>
         <div class="adm-nav-item" onclick="nav('services')">SERVICIOS</div>
-        <div class="adm-nav-item" onclick="nav('projects')">PROYECTOS & CASOS</div>
+        <div class="adm-nav-item" onclick="nav('projects')">PROYECTOS</div>
         
         <div style="margin-top: auto;">
-            <button class="btn-main" onclick="saveAll()">GUARDAR TODO</button>
+            <button class="btn-main" onclick="saveToStorage()">GUARDAR TODO</button>
             <a href="index.html" style="display: block; text-align: center; margin-top: 2rem; color: var(--text-muted); font-size: 0.8rem;">← Volver al sitio</a>
         </div>
     </aside>
@@ -74,82 +73,61 @@
         
         <!-- HOME -->
         <div id="sec-home" class="adm-section active">
-            <h1>Editar Inicio</h1>
+            <h1>Portada</h1>
             <div class="adm-card">
-                <label>Título (Logo)</label><input type="text" id="h-title">
-                <label>Lema (Tagline)</label><input type="text" id="h-tagline">
-                <label>Subtítulo</label><input type="text" id="h-subtitle">
+                <label>Título Logo</label><input type="text" id="h-title" oninput="db.home.title=this.value">
+                <label>Tagline</label><input type="text" id="h-tagline" oninput="db.home.tagline=this.value">
+                <label>Subtítulo</label><input type="text" id="h-subtitle" oninput="db.home.subtitle=this.value">
             </div>
         </div>
 
         <!-- SERVICES -->
         <div id="sec-services" class="adm-section">
-            <h1>Editar Servicios</h1>
+            <h1>Servicios</h1>
             <div id="serv-list"></div>
-            <button class="adm-nav-item" style="border: 1px dashed white; width: 100%;" onclick="addS()">+ AGREGAR SERVICIO</button>
+            <button class="adm-nav-item" onclick="addS()">+ AGREGAR SERVICIO</button>
         </div>
 
         <!-- PROJECTS -->
         <div id="sec-projects" class="adm-section">
-            <h1>Proyectos & Casos</h1>
-            <p style="margin-bottom: 2rem; color: var(--text-muted);">Selecciona un proyecto para editar todas sus imágenes e información interna.</p>
-            <div id="proj-list-grid" class="project-list-grid"></div>
-            <button class="adm-nav-item" style="border: 1px dashed white; width: 100%; margin-top: 2rem;" onclick="addP()">+ AGREGAR NUEVO PROYECTO</button>
+            <h1>Proyectos</h1>
+            <div id="proj-list-grid"></div>
+            <button class="adm-nav-item" onclick="addP()">+ AGREGAR PROYECTO</button>
         </div>
 
-        <!-- PROJECT DETAIL EDITOR (MODAL SIMULATION) -->
+        <!-- PROJECT DETAIL -->
         <div id="sec-p-detail" class="adm-section">
-            <button onclick="nav('projects')" style="background: none; border: none; color: var(--adm-red); cursor: pointer; margin-bottom: 2rem;">← VOLVER A LISTA</button>
-            <h1 id="pd-name">EDITAR CASO</h1>
-            
+            <button onclick="nav('projects')" style="background: none; border: none; color: var(--adm-red); cursor: pointer; margin-bottom: 2rem;">← VOLVER</button>
+            <h1 id="pd-name-head">EDITAR CASO</h1>
             <div class="adm-card">
-                <label>Nombre del Proyecto</label><input type="text" id="pd-title">
-                <label>Categoría</label><input type="text" id="pd-cat">
+                <label>Nombre</label><input type="text" id="pd-title" oninput="db.projects[editingP].name=this.value; renderProjs()">
+                <label>Categoría</label><input type="text" id="pd-cat" oninput="db.projects[editingP].cat=this.value; renderProjs()">
                 
-                <h2 style="margin-top: 4rem;">IMÁGENES DEL CASO (Haz clic en la imagen para cambiarla)</h2>
-                <div class="img-edit-grid" id="pd-gallery">
-                    <!-- Se llena vía JS -->
-                </div>
+                <h2 style="margin-top: 4rem;">GALERÍA DE IMÁGENES</h2>
+                <div class="img-edit-grid" id="pd-gallery"></div>
 
-                <h2 style="margin-top: 4rem;">CONTENIDO ESCRITO</h2>
-                <label>El Desafío (Explicación)</label>
-                <textarea id="pd-challenge"></textarea>
-                <label>La Solución (Explicación)</label>
-                <textarea id="pd-solution"></textarea>
+                <h2 style="margin-top: 4rem;">CONTENIDO</h2>
+                <label>Desafío</label><textarea id="pd-challenge" oninput="db.projects[editingP].challenge=this.value"></textarea>
+                <label>Solución</label><textarea id="pd-solution" oninput="db.projects[editingP].solution=this.value"></textarea>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                    <div><label>Métrica 1 (Valor)</label><input type="text" id="pd-m1v"></div>
-                    <div><label>Métrica 1 (Texto)</label><input type="text" id="pd-m1l"></div>
-                    <div><label>Métrica 2 (Valor)</label><input type="text" id="pd-m2v"></div>
-                    <div><label>Métrica 2 (Texto)</label><input type="text" id="pd-m2l"></div>
+                    <div><label>Métrica 1(V)</label><input type="text" id="pd-m1v" oninput="db.projects[editingP].m1[0]=this.value"></div>
+                    <div><label>Métrica 1(T)</label><input type="text" id="pd-m1l" oninput="db.projects[editingP].m1[1]=this.value"></div>
+                    <div><label>Métrica 2(V)</label><input type="text" id="pd-m2v" oninput="db.projects[editingP].m2[0]=this.value"></div>
+                    <div><label>Métrica 2(T)</label><input type="text" id="pd-m2l" oninput="db.projects[editingP].m2[1]=this.value"></div>
                 </div>
+                <button class="danger-btn" onclick="deleteP()">ELIMINAR ESTE PROYECTO PERMANENTEMENTE</button>
             </div>
         </div>
 
     </main>
 
     <script>
-        const assetsBase = ["img/remitos.png", "img/app-movil.png", "img/hero-bg.png"];
+        const initialTemplate = { id: "", name: "Nombre Proyecto", cat: "Categoría", imgs: ["img/remitos.png", "img/hero-bg.png", "img/app-movil.png"], challenge: "Texto desafío", solution: "Texto solución", m1: ["0", "LBL"], m2: ["0", "LBL"] };
         const defaultData = {
             home: { title: "TEKNÉ", tagline: "SOLUCIONES TECNOLÓGICAS", subtitle: "SOFTWARE EXCLUSIVO PARA EMPRESAS" },
-            services: [
-                { name: "DESARROLLO WEB PREMIUM", desc: "Sitios de alto rendimiento...", img: "img/hero-bg.png" },
-                { name: "APLICACIONES MÓVILES", desc: "Apps robustas Android/iOS...", img: "img/app-movil.png" }
-            ],
-            projects: [
-                { id: "remitos", name: "SISTEMA DE REMITOS", cat: "LOGÍSTICA", 
-                  imgs: ["img/remitos.png", "img/hero-bg.png", "img/app-movil.png"],
-                  challenge: "Digitalizar flujo logístico físico...", 
-                  solution: "Implementación PWA Cloud Sync...",
-                  m1: ["-100%", "PAPEL"], m2: ["0.2s", "SYNC"] 
-                },
-                { id: "app-movil", name: "APP MÓVIL CORPORATIVA", cat: "FIELD OPS", 
-                  imgs: ["img/app-movil.png", "img/remitos.png", "img/hero-bg.png"],
-                  challenge: "Equipos de campo sin conectividad...", 
-                  solution: "React Native Offline Experience...",
-                  m1: ["+65%", "EFICIENCIA"], m2: ["LIVE", "DATA"] 
-                }
-            ]
+            services: [ { name: "WEB", desc: "...", img: "img/hero-bg.png" } ],
+            projects: [ { ...initialTemplate, id: 'remitos', name: 'SISTEMA DE REMITOS' } ]
         };
 
         let db = JSON.parse(localStorage.getItem('tekne_v3')) || defaultData;
@@ -160,7 +138,7 @@
                 document.getElementById('loginGate').remove();
                 document.getElementById('aside').classList.remove('hidden');
                 document.getElementById('main').classList.remove('hidden');
-                initFields();
+                syncUI();
             }
         }
 
@@ -168,12 +146,9 @@
             document.querySelectorAll('.adm-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.adm-nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById('sec-' + sec).classList.add('active');
-            // Find active nav item and mark it
-            const items = document.querySelectorAll('.adm-nav-item');
-            items.forEach(i => { if(i.innerText.includes(sec.toUpperCase())) i.classList.add('active'); });
         }
 
-        function initFields() {
+        function syncUI() {
             document.getElementById('h-title').value = db.home.title;
             document.getElementById('h-tagline').value = db.home.tagline;
             document.getElementById('h-subtitle').value = db.home.subtitle;
@@ -185,12 +160,11 @@
             const list = document.getElementById('serv-list');
             list.innerHTML = db.services.map((s, i) => `
                 <div class="adm-card">
-                    <label>Nombre del Servicio</label><input type="text" value="${s.name}" onchange="db.services[${i}].name=this.value">
-                    <label>Imagen</label>
+                    <label>Nombre</label><input type="text" value="${s.name}" oninput="db.services[${i}].name=this.value">
+                    <label>Img</label>
                     <div class="img-edit-box">
                         <img src="${s.img}" onclick="this.nextElementSibling.click()">
                         <input type="file" onchange="hdlImg(this, (url)=> {db.services[${i}].img=url; renderServs()})">
-                        <small>Haz clic arriba para subir nueva imagen</small>
                     </div>
                 </div>
             `).join('');
@@ -200,8 +174,7 @@
             const list = document.getElementById('proj-list-grid');
             list.innerHTML = db.projects.map((p, i) => `
                 <div class="project-row" onclick="openP(${i})">
-                    <span>${p.name} — ${p.cat}</span>
-                    <span style="color: var(--adm-red);">Editar Caso ↗</span>
+                    <span>${p.name}</span> <span style="color: var(--adm-red);">Editar ↗</span>
                 </div>
             `).join('');
         }
@@ -222,68 +195,51 @@
             const gall = document.getElementById('pd-gallery');
             gall.innerHTML = p.imgs.map((url, idx) => `
                 <div class="img-edit-box">
-                    <label>Imagen ${idx+1}</label>
                     <img src="${url}" onclick="this.nextElementSibling.click()">
                     <input type="file" onchange="hdlImg(this, (res)=> {db.projects[editingP].imgs[${idx}]=res; openP(editingP)})">
                 </div>
             `).join('');
         }
 
-        // Handle Image Upload with Compression (Ensures it fits in localStorage)
         function hdlImg(input, cb) {
             const file = input.files[0];
             if(!file) return;
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
-                    // Create Canvas to resize/compress
                     const canvas = document.createElement("canvas");
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    // Max dimension (e.g., 1200px)
-                    const MAX_DIM = 1200;
-                    if (width > height) {
-                        if (width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM; }
-                    } else {
-                        if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM; }
-                    }
-
-                    canvas.width = width; canvas.height = height;
+                    const MAX = 1200;
+                    let w = img.width, h = img.height;
+                    if(w > h) { if(w > MAX) { h *= MAX/w; w = MAX; } } else { if(h > MAX) { w *= MAX/h; h = MAX; } }
+                    canvas.width = w; canvas.height = h;
                     const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Export as JPEG with 0.7 quality
-                    const compressed = canvas.toDataURL("image/jpeg", 0.7);
-                    cb(compressed);
+                    ctx.drawImage(img, 0, 0, w, h);
+                    cb(canvas.toDataURL("image/jpeg", 0.7));
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
 
-        function addS() { db.services.push({name:'NUEVO', desc:'', img: assetsBase[0]}); renderServs(); }
-        function addP() { db.projects.push({...defaultData.projects[0], id: 'p-'+Date.now()}); renderProjs(); }
+        function addP() {
+            const n = JSON.parse(JSON.stringify(initialTemplate));
+            n.id = "p-" + Date.now();
+            db.projects.push(n);
+            renderProjs();
+            openP(db.projects.length - 1);
+        }
 
-        function saveAll() {
-            db.home.title = document.getElementById('h-title').value;
-            db.home.tagline = document.getElementById('h-tagline').value;
-            db.home.subtitle = document.getElementById('h-subtitle').value;
-            
-            if(editingP !== null) {
-                const p = db.projects[editingP];
-                p.name = document.getElementById('pd-title').value;
-                p.cat = document.getElementById('pd-cat').value;
-                p.challenge = document.getElementById('pd-challenge').value;
-                p.solution = document.getElementById('pd-solution').value;
-                p.m1 = [document.getElementById('pd-m1v').value, document.getElementById('pd-m1l').value];
-                p.m2 = [document.getElementById('pd-m2v').value, document.getElementById('pd-m2l').value];
+        function addS() { db.services.push({name:'NUEVO', desc:'', img: 'img/hero-bg.png'}); renderServs(); }
+        function deleteP() { if(confirm("¿Seguro?")) { db.projects.splice(editingP, 1); nav('projects'); renderProjs(); } }
+
+        function saveToStorage() {
+            try {
+                localStorage.setItem('tekne_v3', JSON.stringify(db));
+                alert("¡Guardado con éxito!");
+            } catch(e) {
+                alert("ERROR: La memoria está llena. Prueba a usar imágenes más pequeñas.");
             }
-
-            localStorage.setItem('tekne_v3', JSON.stringify(db));
-            alert("¡Cambios totales guardados! El sitio se ha actualizado.");
         }
     </script>
 </body>
