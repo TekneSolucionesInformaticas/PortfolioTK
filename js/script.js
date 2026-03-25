@@ -15,6 +15,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const topNav = document.querySelector('.hero-top-nav');
 
+    /* --- Mobile Hamburger Menu --- */
+    if (topNav) {
+        // Inject burger button into nav
+        const burger = document.createElement('button');
+        burger.className = 'nav-burger';
+        burger.setAttribute('aria-label', 'Menú');
+        burger.innerHTML = '<span></span><span></span><span></span>';
+        topNav.appendChild(burger);
+
+        // Build mobile overlay by cloning existing nav links
+        const mobileMenu = document.createElement('div');
+        mobileMenu.className = 'mobile-menu';
+        topNav.querySelectorAll('a').forEach(link => {
+            const clone = link.cloneNode(true);
+            clone.removeAttribute('style'); // strip inline color/font from some links
+            if (link.classList.contains('hero-nav-item') && link.getAttribute('href') && link.getAttribute('href').includes('contacto')) {
+                clone.style.color = 'var(--primary)';
+            }
+            mobileMenu.appendChild(clone);
+        });
+        document.body.appendChild(mobileMenu);
+
+        const closeMobileMenu = () => {
+            burger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        burger.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('active');
+            burger.classList.toggle('active', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+
+        // Close on link click (navigation)
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) closeMobileMenu();
+        });
+    }
+
     /* --- Navbar Scroll State --- */
     const updateNavbar = () => {
         if (window.scrollY > 100) {
