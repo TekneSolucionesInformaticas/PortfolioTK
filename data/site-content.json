@@ -1,0 +1,41 @@
+{
+  "home": {
+    "title": "TEKNÉ",
+    "tagline": "SOLUCIONES TECNOLÓGICAS",
+    "subtitle": "SOFTWARE EXCLUSIVO PARA EMPRESAS"
+  },
+  "services": [
+    {
+      "name": "WEB",
+      "desc": "...",
+      "img": "img/hero-bg.png"
+    }
+  ],
+  "projects": [
+    {
+      "id": "remitos",
+      "name": "SISTEMA DE REMITOS",
+      "cat": "Categoría",
+      "imgs": [
+        "img/remitos.png",
+        "img/hero-bg.png",
+        "img/app-movil.png"
+      ],
+      "captions": [
+        "",
+        "",
+        ""
+      ],
+      "challenge": "Texto desafío",
+      "solution": "Texto solución",
+      "m1": [
+        "0",
+        "LBL"
+      ],
+      "m2": [
+        "0",
+        "LBL"
+      ]
+    }
+  ]
+}

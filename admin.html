@@ -130,11 +130,25 @@
             projects: [ { ...initialTemplate, id: 'remitos', name: 'SISTEMA DE REMITOS' } ]
         };
 
-        let db = JSON.parse(localStorage.getItem('tekne_v3')) || defaultData;
+        let db = defaultData;
         let editingP = null;
 
-        function doLogin() {
+        async function bootstrapData() {
+            try {
+                const res = await fetch('data/site-content.json', { cache: 'no-store' });
+                if (res.ok) {
+                    db = await res.json();
+                    return;
+                }
+            } catch (e) {
+                // Ignore and fallback below.
+            }
+            db = JSON.parse(localStorage.getItem('tekne_v3')) || defaultData;
+        }
+
+        async function doLogin() {
             if(document.getElementById('pass').value === 'tekne2026') {
+                await bootstrapData();
                 document.getElementById('loginGate').remove();
                 document.getElementById('aside').classList.remove('hidden');
                 document.getElementById('main').classList.remove('hidden');
@@ -246,10 +260,16 @@
         function addS() { db.services.push({name:'NUEVO', desc:'', img: 'img/hero-bg.png'}); renderServs(); }
         function deleteP() { if(confirm("¿Seguro?")) { db.projects.splice(editingP, 1); nav('projects'); renderProjs(); } }
 
-        function saveToStorage() {
+        async function saveToStorage() {
             try {
                 localStorage.setItem('tekne_v3', JSON.stringify(db));
-                alert("¡Guardado con éxito!");
+                const payload = encodeURIComponent(JSON.stringify(db, null, 2));
+                const dataUrl = `data:text/json;charset=utf-8,${payload}`;
+                const dl = document.createElement('a');
+                dl.href = dataUrl;
+                dl.download = 'site-content.json';
+                dl.click();
+                alert("Guardado local OK. Se descargó site-content.json. Subilo al repo en /data para publicar cambios globales.");
             } catch(e) {
                 alert("ERROR: La memoria está llena. Prueba a usar imágenes más pequeñas.");
             }

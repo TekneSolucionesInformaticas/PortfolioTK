@@ -3,9 +3,17 @@
  * Full Dynamic Content Engine
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
-    const db = JSON.parse(localStorage.getItem('tekne_v3'));
+    let db = null;
+    try {
+        const res = await fetch('data/site-content.json', { cache: 'no-store' });
+        if (res.ok) db = await res.json();
+    } catch (e) {
+        // Ignore and fallback to localStorage.
+    }
+
+    if (!db) db = JSON.parse(localStorage.getItem('tekne_v3'));
     if (!db) return;
 
     // 1. GLOBAL LOGO
