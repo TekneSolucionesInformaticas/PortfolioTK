@@ -48,21 +48,25 @@ document.addEventListener('DOMContentLoaded', () => {
     revealOnScroll();
 
     /* --- Project List Hover Preview (Split-Screen) --- */
-    if (projectItems.length > 0 && projectPreview) {
-        projectItems.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                const imgUrl = item.getAttribute('data-image');
-                if (imgUrl) {
-                    previewImg.src = imgUrl;
-                    // Reset opacity for a fresh fade
-                    previewImg.style.opacity = '0';
-                    setTimeout(() => {
-                        previewImg.style.opacity = '0.8';
-                    }, 50);
-                }
+    window.initProjectPreviews = () => {
+        const items = document.querySelectorAll('.project-item');
+        const pImg = document.getElementById('project-preview-img');
+        
+        if (items.length > 0 && pImg) {
+            items.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    const imgUrl = item.getAttribute('data-image');
+                    if (imgUrl) {
+                        pImg.src = imgUrl;
+                        pImg.style.opacity = '0';
+                        setTimeout(() => { pImg.style.opacity = '0.8'; }, 50);
+                    }
+                });
             });
-        });
-    }
+        }
+    };
+
+    initProjectPreviews();
 
     /* --- Mouse Follow Vignette (Premium Detail) --- */
     const vignette = document.querySelector('.vignette');

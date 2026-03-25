@@ -125,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Trigger reveal
+    // Trigger reveal & previews
     if (window.revealOnScroll) window.revealOnScroll();
+    if (window.initProjectPreviews) window.initProjectPreviews();
 
 });
