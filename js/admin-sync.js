@@ -113,9 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 p.imgs.forEach((url, i) => {
                     // Logic: 1st is large, 2nd & 3rd are small. Others follow a 2x2 grid.
                     const isL = i === 0;
+                    const caption = (p.captions && p.captions[i]) ? p.captions[i] : '';
                     gH += `
                         <div class="${isL ? 'case-image-large' : 'case-image-small'}" data-reveal style="transition-delay: ${0.1 * i}s;">
                             <img src="${url}">
+                            ${caption ? `<p class="img-caption">${caption}</p>` : ''}
                         </div>
                     `;
                 });

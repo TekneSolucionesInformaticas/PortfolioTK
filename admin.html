@@ -123,7 +123,7 @@
     </main>
 
     <script>
-        const initialTemplate = { id: "", name: "Nombre Proyecto", cat: "Categoría", imgs: ["img/remitos.png", "img/hero-bg.png", "img/app-movil.png"], challenge: "Texto desafío", solution: "Texto solución", m1: ["0", "LBL"], m2: ["0", "LBL"] };
+        const initialTemplate = { id: "", name: "Nombre Proyecto", cat: "Categoría", imgs: ["img/remitos.png", "img/hero-bg.png", "img/app-movil.png"], captions: ["", "", ""], challenge: "Texto desafío", solution: "Texto solución", m1: ["0", "LBL"], m2: ["0", "LBL"] };
         const defaultData = {
             home: { title: "TEKNÉ", tagline: "SOLUCIONES TECNOLÓGICAS", subtitle: "SOFTWARE EXCLUSIVO PARA EMPRESAS" },
             services: [ { name: "WEB", desc: "...", img: "img/hero-bg.png" } ],
@@ -197,18 +197,20 @@
 
         function renderProjGallery() {
             const p = db.projects[editingP];
+            if (!p.captions) p.captions = p.imgs.map(() => '');
             const gall = document.getElementById('pd-gallery');
             gall.innerHTML = p.imgs.map((url, idx) => `
                 <div class="img-edit-box">
                     <label>Imagen ${idx+1}</label>
                     <img src="${url}" onclick="this.nextElementSibling.click()">
                     <input type="file" onchange="hdlImg(this, (res)=> {db.projects[editingP].imgs[${idx}]=res; renderProjGallery()})">
-                    <button class="danger-btn" onclick="db.projects[editingP].imgs.splice(${idx}, 1); renderProjGallery()">Quitar</button>
+                    <input type="text" placeholder="Descripción de la imagen..." value="${(p.captions[idx]||'').replace(/"/g,'&quot;')}" oninput="if(!db.projects[editingP].captions)db.projects[editingP].captions=[];db.projects[editingP].captions[${idx}]=this.value" style="margin-top:0.75rem;">
+                    <button class="danger-btn" onclick="db.projects[editingP].imgs.splice(${idx},1);if(db.projects[editingP].captions)db.projects[editingP].captions.splice(${idx},1);renderProjGallery()">Quitar</button>
                 </div>
             `).join('');
 
             if(p.imgs.length < 10) {
-                gall.innerHTML += `<button class="adm-nav-item" style="border: 1px dashed white; grid-column: 1/-1;" onclick="db.projects[editingP].imgs.push('img/hero-bg.png'); renderProjGallery()">+ AGREGAR IMAGEN AL CASO (${p.imgs.length}/10)</button>`;
+                gall.innerHTML += `<button class="adm-nav-item" style="border: 1px dashed white; grid-column: 1/-1;" onclick="db.projects[editingP].imgs.push('img/hero-bg.png');if(!db.projects[editingP].captions)db.projects[editingP].captions=[];db.projects[editingP].captions.push('');renderProjGallery()">+ AGREGAR IMAGEN AL CASO (${p.imgs.length}/10)</button>`;
             }
         }
 

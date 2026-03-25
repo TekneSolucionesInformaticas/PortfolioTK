@@ -92,4 +92,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    /* --- Lightbox --- */
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox-overlay';
+    lightbox.innerHTML = `
+        <button class="lightbox-close" aria-label="Cerrar">✕</button>
+        <img class="lightbox-img" src="" alt="">
+        <p class="lightbox-caption"></p>
+    `;
+    document.body.appendChild(lightbox);
+
+    const lbImg = lightbox.querySelector('.lightbox-img');
+    const lbCaption = lightbox.querySelector('.lightbox-caption');
+
+    const openLightbox = (src, caption) => {
+        lbImg.src = src;
+        lbCaption.textContent = caption || '';
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'IMG' && e.target.closest('.case-gallery')) {
+            const wrapper = e.target.closest('.case-image-large, .case-image-small');
+            const captionEl = wrapper ? wrapper.querySelector('.img-caption') : null;
+            openLightbox(e.target.src, captionEl ? captionEl.textContent : '');
+        }
+    });
+
+    lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
 });
