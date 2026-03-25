@@ -192,13 +192,24 @@
             document.getElementById('pd-m2v').value = p.m2[0];
             document.getElementById('pd-m2l').value = p.m2[1];
             
+            renderProjGallery();
+        }
+
+        function renderProjGallery() {
+            const p = db.projects[editingP];
             const gall = document.getElementById('pd-gallery');
             gall.innerHTML = p.imgs.map((url, idx) => `
                 <div class="img-edit-box">
+                    <label>Imagen ${idx+1}</label>
                     <img src="${url}" onclick="this.nextElementSibling.click()">
-                    <input type="file" onchange="hdlImg(this, (res)=> {db.projects[editingP].imgs[${idx}]=res; openP(editingP)})">
+                    <input type="file" onchange="hdlImg(this, (res)=> {db.projects[editingP].imgs[${idx}]=res; renderProjGallery()})">
+                    <button class="danger-btn" onclick="db.projects[editingP].imgs.splice(${idx}, 1); renderProjGallery()">Quitar</button>
                 </div>
             `).join('');
+
+            if(p.imgs.length < 10) {
+                gall.innerHTML += `<button class="adm-nav-item" style="border: 1px dashed white; grid-column: 1/-1;" onclick="db.projects[editingP].imgs.push('img/hero-bg.png'); renderProjGallery()">+ AGREGAR IMAGEN AL CASO (${p.imgs.length}/10)</button>`;
+            }
         }
 
         function hdlImg(input, cb) {

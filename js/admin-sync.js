@@ -106,11 +106,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const sText = document.getElementById('case-solution-text') || document.querySelectorAll('.case-content p')[1];
             if (sText) sText.textContent = p.solution;
 
-            // Gallery
-            const galleryImgs = document.querySelectorAll('.case-gallery img');
-            p.imgs.forEach((url, idx) => {
-                if (galleryImgs[idx]) galleryImgs[idx].src = url;
-            });
+            // Gallery (Dynamic Grid Generation)
+            const gCont = document.querySelector('.case-gallery');
+            if (gCont && p.imgs) {
+                let gH = '';
+                p.imgs.forEach((url, i) => {
+                    // Logic: 1st is large, 2nd & 3rd are small. Others follow a 2x2 grid.
+                    const isL = i === 0;
+                    gH += `
+                        <div class="${isL ? 'case-image-large' : 'case-image-small'}" data-reveal style="transition-delay: ${0.1 * i}s;">
+                            <img src="${url}">
+                        </div>
+                    `;
+                });
+                gCont.innerHTML = gH;
+            }
 
             // Metrics
             const m1v = document.getElementById('case-m1v') || document.querySelectorAll('.metric-value')[0];
