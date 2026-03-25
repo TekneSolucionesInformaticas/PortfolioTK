@@ -1,5 +1,5 @@
 /**
- * TEKNÉ Admin Sync V3 (Base64 Support)
+ * TEKNÉ Admin Sync V3.1 - Dynamic Route Support
  * Full Dynamic Content Engine
  */
 
@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const db = JSON.parse(localStorage.getItem('tekne_v3'));
     if (!db) return;
 
-    // 1. LOGO & NAV
+    // 1. GLOBAL LOGO
     const branding = document.querySelector('.hero-logo');
     if (branding && db.home.title) branding.textContent = db.home.title;
 
-    // 2. SPLASH HOME
-    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+    // 2. SPLASH HOME (index.html)
+    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('PortfolioTK/')) {
         const title = document.querySelector('.hero-title span');
         const tagline = document.querySelector('.hero-subtitle span');
         const subtitle = document.querySelector('.hero-main-content div span:not(.hero-nav-item)');
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (subtitle) subtitle.textContent = db.home.subtitle;
     }
 
-    // 3. SERVICES LIST
+    // 3. SERVICES LIST (servicios.html)
     if (window.location.pathname.includes('servicios.html')) {
         const sc = document.querySelector('main.container-large');
         if (sc && db.services) {
@@ -50,14 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 4. PROJECTS LISTING
+    // 4. PROJECTS LISTING (proyectos.html)
     if (window.location.pathname.includes('proyectos.html')) {
         const pc = document.querySelector('.projects-list');
         if (pc && db.projects) {
             let h = '';
             db.projects.forEach((p, i) => {
+                // Determine the correct URL: use specific file for legacy, or detalle.html for new ones
+                const isLegacy = ['remitos', 'app-movil', 'sistema-web'].includes(p.id);
+                const projectUrl = isLegacy ? `proyectos/${p.id}.html` : `proyectos/detalle.html?id=${p.id}`;
+                
                 h += `
-                    <a href="proyectos/${p.id}.html" class="project-item" data-image="${p.imgs[0]}">
+                    <a href="${projectUrl}" class="project-item" data-image="${p.imgs[0]}">
                         <div style="display: flex; align-items: center;">
                             <span class="project-index">0${i + 1}</span>
                             <span class="project-name">${p.name}</span>
@@ -70,34 +74,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 5. INTERNAL CASE STUDY HYDRATION
-    if (window.location.pathname.includes('proyectos/') && !window.location.pathname.includes('proyectos.html')) {
-        const pageId = window.location.pathname.split('/').pop().replace('.html', '');
-        const p = db.projects.find(proj => proj.id === pageId);
+    // 5. INTERNAL CASE STUDY HYDRATION (proyectos/*.html)
+    const isDetallePage = window.location.pathname.includes('detalle.html');
+    const isLegacyProject = window.location.pathname.includes('proyectos/') && !window.location.pathname.includes('proyectos.html');
+
+    if (isDetallePage || isLegacyProject) {
+        let pId;
+        if (isDetallePage) {
+            const urlParams = new URLSearchParams(window.location.search);
+            pId = urlParams.get('id');
+        } else {
+            pId = window.location.pathname.split('/').pop().replace('.html', '');
+        }
+
+        const p = db.projects.find(proj => proj.id === pId);
 
         if (p) {
-            // Hero
-            const t = document.querySelector('.case-hero h1 span');
+            // Hydrate Detalle.html Elements
+            const t = document.getElementById('case-title') || document.querySelector('.case-hero h1 span');
             if (t) t.textContent = p.name;
             
-            // Challenge & Solution
-            const ps = document.querySelectorAll('.case-content p');
-            if (ps[0]) ps[0].textContent = p.challenge;
-            if (ps[1]) ps[1].textContent = p.solution;
+            const pd = document.getElementById('case-hero-desc') || document.querySelector('.case-hero p');
+            if (pd) pd.textContent = p.challenge.substring(0, 150) + "..."; // Fallback text
 
-            // Gallery (Change ANY image in the project)
-            const imgs = document.querySelectorAll('.case-gallery img');
+            const catEl = document.getElementById('case-cat');
+            if (catEl) catEl.textContent = p.cat;
+
+            const cText = document.getElementById('case-challenge-text') || document.querySelectorAll('.case-content p')[0];
+            if (cText) cText.textContent = p.challenge;
+            
+            const sText = document.getElementById('case-solution-text') || document.querySelectorAll('.case-content p')[1];
+            if (sText) sText.textContent = p.solution;
+
+            // Gallery
+            const galleryImgs = document.querySelectorAll('.case-gallery img');
             p.imgs.forEach((url, idx) => {
-                if (imgs[idx]) imgs[idx].src = url;
+                if (galleryImgs[idx]) galleryImgs[idx].src = url;
             });
 
             // Metrics
-            const mVs = document.querySelectorAll('.metric-value');
-            const mLs = document.querySelectorAll('.metric-label');
-            if (mVs[0]) mVs[0].textContent = p.m1[0];
-            if (mLs[0]) mLs[0].textContent = p.m1[1];
-            if (mVs[1]) mVs[1].textContent = p.m2[0];
-            if (mLs[1]) mLs[1].textContent = p.m2[1];
+            const m1v = document.getElementById('case-m1v') || document.querySelectorAll('.metric-value')[0];
+            const m1l = document.getElementById('case-m1l') || document.querySelectorAll('.metric-label')[0];
+            const m2v = document.getElementById('case-m2v') || document.querySelectorAll('.metric-value')[1];
+            const m2l = document.getElementById('case-m2l') || document.querySelectorAll('.metric-label')[1];
+
+            if (m1v) m1v.textContent = p.m1[0];
+            if (m1l) m1l.textContent = p.m1[1];
+            if (m2v) m2v.textContent = p.m2[0];
+            if (m2l) m2l.textContent = p.m2[1];
         }
     }
 

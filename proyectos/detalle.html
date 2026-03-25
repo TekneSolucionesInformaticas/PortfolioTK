@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso de Estudio | TEKNÉ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%237F1D1D%22 rx=%2210%22/><text y=%22.85em%22 x=%22.1em%22 font-size=%2260%22 font-family=%22Space+Grotesk%22 font-weight=%22700%22 fill=%22white%22>T</text></svg>">
+</head>
+<body>
+    <div class="vignette"></div>
+    <header class="hero-top-nav">
+        <a href="../servicios.html" class="hero-nav-item">SERVICIOS</a>
+        <a href="../proyectos.html" class="hero-nav-item">PROYECTOS</a>
+        <a href="../index.html" class="hero-logo">TEKNÉ</a>
+        <a href="../contacto.html" class="hero-nav-item" style="color: var(--primary); font-weight: 600;">CONSULTA GRATIS</a>
+    </header>
+
+    <header class="container-large case-hero">
+        <a href="../proyectos.html" class="hero-nav-item" style="display: block; margin-bottom: 3rem; color: var(--text-dim);">← Volver a Proyectos</a>
+        <h1 class="hero-title reveal-text" style="font-size: clamp(3rem, 10vw, 7rem);">
+            <span id="case-title">CARGANDO...</span>
+        </h1>
+        <p class="text-muted" id="case-hero-desc" style="max-width: 700px; margin-top: 3rem; font-size: 1.5rem;"></p>
+    </header>
+
+    <main class="container-large">
+        <section class="case-grid">
+            <div class="case-sidebar">
+                <h3>CONTEXTO</h3>
+                <p class="text-dim" id="case-cat">Categoría</p>
+                <p class="text-dim">Consultoría IT</p>
+            </div>
+            <div class="case-content" data-reveal>
+                <h2 id="case-challenge-title">El Desafío</h2>
+                <p id="case-challenge-text"></p>
+            </div>
+        </section>
+
+        <section class="case-gallery">
+            <div class="case-image-large" data-reveal><img id="case-img-1" src="" alt=""></div>
+            <div class="case-image-small" data-reveal style="transition-delay: 0.2s;"><img id="case-img-2" src="" alt=""></div>
+            <div class="case-image-small" data-reveal style="transition-delay: 0.4s;"><img id="case-img-3" src="" alt=""></div>
+        </section>
+
+        <section class="case-grid" style="margin-top: 5rem;">
+            <div class="case-sidebar"><h3>SOLUCIÓN</h3></div>
+            <div class="case-content" data-reveal>
+                <h2 id="case-solution-title">Arquitectura Desarrollada</h2>
+                <p id="case-solution-text"></p>
+                <div class="case-metrics">
+                    <div class="metric-card">
+                        <span class="metric-value" id="case-m1v"></span>
+                        <span class="metric-label" id="case-m1l"></span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value" id="case-m2v"></span>
+                        <span class="metric-label" id="case-m2l"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="padding: 10rem 0; text-align: center;">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">¿Impulsamos tu visión?</h2>
+            <a href="../contacto.html" class="hero-nav-item" style="color: var(--primary); font-size: 1.2rem;">Hablemos hoy ↗</a>
+        </section>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script src="../js/admin-sync.js"></script>
+</body>
+</html>
