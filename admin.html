@@ -268,7 +268,15 @@
         function saveToStorage() {
             try {
                 localStorage.setItem('tekne_v3', JSON.stringify(db));
-                alert("¡Guardado con éxito!");
+                // Also download JSON for global publish
+                const payload = JSON.stringify(db, null, 2);
+                const blob = new Blob([payload], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'site-content.json';
+                a.click();
+                URL.revokeObjectURL(a.href);
+                alert("¡Guardado! Se descargó site-content.json → Reemplazalo en data/ del repo y hacé push para que se vea en todos los dispositivos.");
             } catch(e) {
                 alert("ERROR: La memoria está llena. Prueba a usar imágenes más pequeñas.");
             }

@@ -1,24 +1,25 @@
 /**
- * TEKNÉ Admin Sync V3.1 - Dynamic Route Support
- * Full Dynamic Content Engine
+ * TEKNÉ Admin Sync V4 - Global JSON Source
+ * Reads from data/site-content.json (shared across all devices).
+ * Falls back to localStorage only if JSON fetch fails (e.g. local dev).
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // Keep the previous behavior first: user's saved content in this browser.
-    let db = JSON.parse(localStorage.getItem('tekne_v3'));
+    // Resolve base path: works from root pages AND from proyectos/ subdirectory
+    const isSubdir = /proyectos\//.test(window.location.pathname);
+    const basePath = isSubdir ? '../' : '';
 
-    // Fallback to shared JSON only when localStorage is empty.
-    if (!db) {
-        try {
-            const res = await fetch('data/site-content.json', { cache: 'no-store' });
-            if (res.ok) db = await res.json();
-        } catch (e) {
-            // Ignore fetch errors; no data available.
-        }
-    }
+    // 1. Try shared global JSON first (works on every device)
+    let db = null;
+    try {
+        const res = await fetch(basePath + 'data/site-content.json', { cache: 'no-store' });
+        if (res.ok) db = await res.json();
+    } catch (e) { /* ignore */ }
 
-    if (!db) return;
+    // 2. Fallback to localStorage only if JSON unavailable (offline / local dev)
+    if (!db) db = JSON.parse(localStorage.getItem('tekne_v3'));
+    if (!db) { document.body.classList.add('synced'); return; }
 
     // 1. GLOBAL LOGO
     const branding = document.querySelector('.hero-logo');
@@ -152,5 +153,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Trigger reveal & previews
     if (window.revealOnScroll) window.revealOnScroll();
     if (window.initProjectPreviews) window.initProjectPreviews();
+
+    // Mark body as synced so CSS can reveal hidden sections
+    document.body.classList.add('synced');
 
 });
