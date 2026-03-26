@@ -270,22 +270,6 @@ a {
 
 .project-item {
     border-bottom: 1px solid var(--border-color);
-    padding: 4rem 0;
-    display: block;
-    cursor: pointer;
-    position: relative;
-    transition: var(--transition);
-}
-
-.project-item:first-child { border-top: 1px solid var(--border-color); }
-
-.project-item:hover {
-    padding-left: 2rem;
-    color: var(--primary);
-}
-
-.project-item {
-    border-bottom: 1px solid var(--border-color);
     padding: 3rem 0;
     display: flex;
     justify-content: space-between;
@@ -750,6 +734,25 @@ a {
     color: var(--text-dim);
 }
 
+/* Footer */
+.footer-tekne {
+    text-align: center;
+    padding: 5rem 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-tekne h2 {
+    font-size: 0.85rem;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+}
+
+.footer-tekne p {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+}
+
 /* =============================================
    RESPONSIVE — TABLET & MOBILE (max 768px)
    ============================================= */
@@ -774,6 +777,16 @@ a {
         padding-bottom: 3rem !important;
     }
 
+    /* --- Clamp page titles on mobile --- */
+    header.container-large .hero-title {
+        font-size: clamp(2.2rem, 10vw, 4rem) !important;
+    }
+
+    header.container-large p {
+        font-size: 1rem !important;
+        margin-top: 1.25rem !important;
+    }
+
     /* --- Main content areas --- */
     main.container-large {
         margin-top: 2.5rem !important;
@@ -781,8 +794,12 @@ a {
     }
 
     /* --- INDEX / HERO --- */
+    .hero { padding: 1.5rem; }
     .hero-ornament { font-size: 0.75rem; letter-spacing: 0.5em; }
+    .hero-title { font-size: clamp(2.8rem, 12vw, 5rem) !important; }
     .hero-subtitle { font-size: 0.75rem; letter-spacing: 0.12em; }
+    .hero-decoration { height: 20vh; }
+    .tech-plant { width: 8rem; }
 
     /* --- PROYECTOS PAGE --- */
     .projects-section {
@@ -803,10 +820,22 @@ a {
         gap: 2.5rem;
         padding: 4rem 0;
     }
-    .service-image { width: 100%; }
+    .service-image { width: 100%; aspect-ratio: 16/10; border-radius: 14px; }
     .service-info h2 { font-size: clamp(1.75rem, 7vw, 2.75rem); }
     .service-info p { font-size: 1rem; max-width: 100%; }
     .service-tags { flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+    .tag { font-size: 0.7rem; padding: 0.4rem 0.85rem; }
+
+    /* --- CONTACTO PAGE — inline font overrides --- */
+    main.container-large a[style*="font-size: 3rem"] {
+        font-size: clamp(1.5rem, 6vw, 2.5rem) !important;
+        word-break: break-word;
+    }
+
+    main.container-large div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 3rem !important;
+    }
 
     /* --- CASE STUDY PAGES --- */
     .case-hero { padding: 8rem 0 3rem; }
@@ -826,15 +855,17 @@ a {
     .case-image-large {
         grid-column: span 1;
         aspect-ratio: 16/9;
+        border-radius: 14px;
     }
-    .case-image-small { aspect-ratio: 16/9; }
+    .case-image-small { aspect-ratio: 16/9; border-radius: 14px; }
     .case-metrics {
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
         margin-top: 2.5rem;
     }
-    .metric-card { padding: 1.5rem; }
+    .metric-card { padding: 1.5rem; border-radius: 14px; }
     .metric-value { font-size: 2rem; }
+
     /* CTA sections with large inline padding */
     section[style*="padding: 15rem"] {
         padding-top: 5rem !important;
@@ -855,11 +886,34 @@ a {
 
     /* --- WHATSAPP BUTTON --- */
     .wpp-float { width: 52px; height: 52px; bottom: 1.25rem; right: 1.25rem; }
-    .wpp-float svg { width: 24px; height: 24px; }
+    .wpp-float svg { width: 26px; height: 26px; }
 
     /* --- FOOTER --- */
     .footer-tekne { padding: 3rem 0 !important; }
     .footer-tekne h2 { font-size: clamp(2rem, 10vw, 4rem) !important; }
+
+    /* --- MOBILE MENU REFINEMENT --- */
+    .mobile-menu .hero-nav-item {
+        font-size: 1.35rem !important;
+        padding: 0.5rem 0;
+        position: relative;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .mobile-menu .hero-nav-item:active {
+        transform: scale(0.97);
+        color: var(--primary) !important;
+    }
+    .mobile-menu .hero-logo {
+        font-size: 2rem !important;
+        margin-bottom: 2rem;
+    }
+
+    /* --- Fixed footer on index --- */
+    footer[style*="position: fixed"] {
+        font-size: 0.6rem !important;
+        bottom: 1.5rem !important;
+        letter-spacing: 0.15em !important;
+    }
 }
 
 /* =============================================
@@ -868,7 +922,25 @@ a {
 @media (max-width: 430px) {
     :root { --padding-x: 1.1rem; }
     .hero-title { line-height: 1; }
+    .hero-title { font-size: clamp(2.2rem, 11vw, 3.5rem) !important; }
     .project-name { font-size: clamp(1.1rem, 5vw, 1.5rem); }
     .case-metrics { grid-template-columns: 1fr; }
     .metric-card { padding: 1.25rem; }
+
+    /* Tighter spacing on small phones */
+    .service-block { padding: 3rem 0; gap: 2rem; }
+    .service-info h2 { font-size: clamp(1.4rem, 6vw, 2rem); }
+
+    /* Contact links */
+    main.container-large a[style*="font-size: 3rem"] {
+        font-size: clamp(1.2rem, 5.5vw, 1.8rem) !important;
+    }
+
+    /* Mobile menu */
+    .mobile-menu .hero-nav-item { font-size: 1.15rem !important; }
+    .mobile-menu .hero-logo { font-size: 1.75rem !important; }
+
+    /* WPP button even smaller */
+    .wpp-float { width: 48px; height: 48px; bottom: 1rem; right: 1rem; }
+    .wpp-float svg { width: 22px; height: 22px; }
 }
