@@ -5,15 +5,19 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    let db = null;
-    try {
-        const res = await fetch('data/site-content.json', { cache: 'no-store' });
-        if (res.ok) db = await res.json();
-    } catch (e) {
-        // Ignore and fallback to localStorage.
+    // Keep the previous behavior first: user's saved content in this browser.
+    let db = JSON.parse(localStorage.getItem('tekne_v3'));
+
+    // Fallback to shared JSON only when localStorage is empty.
+    if (!db) {
+        try {
+            const res = await fetch('data/site-content.json', { cache: 'no-store' });
+            if (res.ok) db = await res.json();
+        } catch (e) {
+            // Ignore fetch errors; no data available.
+        }
     }
 
-    if (!db) db = JSON.parse(localStorage.getItem('tekne_v3'));
     if (!db) return;
 
     // 1. GLOBAL LOGO
