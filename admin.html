@@ -62,6 +62,7 @@
         <div class="adm-nav-item active" onclick="nav('home')">INICIO</div>
         <div class="adm-nav-item" onclick="nav('services')">SERVICIOS</div>
         <div class="adm-nav-item" onclick="nav('projects')">PROYECTOS</div>
+        <div class="adm-nav-item" onclick="nav('config')">CONFIGURACIÓN</div>
         
         <div style="margin-top: auto;">
             <button class="btn-main" onclick="saveToStorage()">GUARDAR TODO</button>
@@ -93,6 +94,24 @@
             <h1>Proyectos</h1>
             <div id="proj-list-grid"></div>
             <button class="adm-nav-item" onclick="addP()">+ AGREGAR PROYECTO</button>
+        </div>
+
+        <!-- CONFIG -->
+        <div id="sec-config" class="adm-section">
+            <h1>Configuración</h1>
+            <div class="adm-card">
+                <h2>GitHub Auto-Publish</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 1rem; line-height: 1.6;">Ingresá tu GitHub Token (PAT) para que el botón <strong>GUARDAR TODO</strong> publique los cambios directamente al repositorio, sin necesidad de descargar ni reemplazar archivos manualmente.</p>
+                <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem;">Creá un token en → GitHub → Settings → Developer Settings → Personal Access Tokens → Fine-grained → permisos: <em>Contents (Read & Write)</em>.</p>
+                <label>GitHub Token (PAT)</label>
+                <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                <label>Propietario (owner)</label>
+                <input type="text" id="cfg-owner" placeholder="tu-usuario-de-github">
+                <label>Repositorio</label>
+                <input type="text" id="cfg-repo" placeholder="PortfolioV1">
+                <button class="btn-main" onclick="saveConfig()">GUARDAR CONFIGURACIÓN</button>
+                <button class="danger-btn" onclick="clearConfig()">Borrar configuración guardada</button>
+            </div>
         </div>
 
         <!-- PROJECT DETAIL -->
@@ -165,6 +184,7 @@
             document.querySelectorAll('.adm-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.adm-nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById('sec-' + sec).classList.add('active');
+            if (sec === 'config') loadConfig();
         }
 
         function syncUI() {
@@ -265,20 +285,90 @@
         function addS() { db.services.push({name:'NUEVO', desc:'', img: 'img/hero-bg.png'}); renderServs(); }
         function deleteP() { if(confirm("¿Seguro?")) { db.projects.splice(editingP, 1); nav('projects'); renderProjs(); } }
 
-        function saveToStorage() {
+        function detectGHInfo() {
+            const host = window.location.hostname;
+            const path = window.location.pathname;
+            if (host.endsWith('.github.io')) {
+                const owner = host.replace('.github.io', '');
+                const repoMatch = path.match(/^\/([^/]+)\//);
+                const repo = repoMatch ? repoMatch[1] : '';
+                return { owner, repo };
+            }
+            return { owner: '', repo: '' };
+        }
+
+        function loadConfig() {
+            const detected = detectGHInfo();
+            document.getElementById('cfg-token').value = localStorage.getItem('gh_token') || '';
+            document.getElementById('cfg-owner').value = localStorage.getItem('gh_owner') || detected.owner;
+            document.getElementById('cfg-repo').value = localStorage.getItem('gh_repo') || detected.repo;
+        }
+
+        function saveConfig() {
+            localStorage.setItem('gh_token', document.getElementById('cfg-token').value.trim());
+            localStorage.setItem('gh_owner', document.getElementById('cfg-owner').value.trim());
+            localStorage.setItem('gh_repo', document.getElementById('cfg-repo').value.trim());
+            alert('Configuración guardada.');
+        }
+
+        function clearConfig() {
+            if (confirm('¿Borrar configuración de GitHub?')) {
+                ['gh_token', 'gh_owner', 'gh_repo'].forEach(k => localStorage.removeItem(k));
+                loadConfig();
+            }
+        }
+
+        async function saveToStorage() {
+            localStorage.setItem('tekne_v3', JSON.stringify(db));
+
+            const token = localStorage.getItem('gh_token');
+            const owner = localStorage.getItem('gh_owner');
+            const repo  = localStorage.getItem('gh_repo');
+
+            if (!token || !owner || !repo) {
+                nav('config');
+                alert('Configurá tu GitHub Token primero para publicar directamente.');
+                return;
+            }
+
+            const btn = document.querySelector('.adm-side .btn-main');
+            if (btn) { btn.textContent = 'PUBLICANDO...'; btn.disabled = true; }
+
             try {
-                localStorage.setItem('tekne_v3', JSON.stringify(db));
-                // Also download JSON for global publish
-                const payload = JSON.stringify(db, null, 2);
-                const blob = new Blob([payload], { type: 'application/json' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'site-content.json';
-                a.click();
-                URL.revokeObjectURL(a.href);
-                alert("¡Guardado! Se descargó site-content.json → Reemplazalo en data/ del repo y hacé push para que se vea en todos los dispositivos.");
+                const content = JSON.stringify(db, null, 2);
+                // Encode UTF-8 → base64 (handles Spanish characters)
+                const bytes = new TextEncoder().encode(content);
+                const binStr = Array.from(bytes, b => String.fromCharCode(b)).join('');
+                const encoded = btoa(binStr);
+
+                const filePath = 'data/site-content.json';
+                const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+                const headers = {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                };
+
+                // Get current SHA (required to update an existing file)
+                let sha = null;
+                const getRes = await fetch(apiBase, { headers });
+                if (getRes.ok) sha = (await getRes.json()).sha;
+
+                const body = { message: 'Admin: actualizar contenido del sitio', content: encoded };
+                if (sha) body.sha = sha;
+
+                const putRes = await fetch(apiBase, { method: 'PUT', headers, body: JSON.stringify(body) });
+
+                if (putRes.ok) {
+                    alert('¡Publicado! Los cambios se verán en el sitio en ~1 minuto.');
+                } else {
+                    const err = await putRes.json();
+                    throw new Error(err.message || putRes.status);
+                }
             } catch(e) {
-                alert("ERROR: La memoria está llena. Prueba a usar imágenes más pequeñas.");
+                alert('Error al publicar: ' + e.message + '\n\nVerificá tu token en Configuración.');
+            } finally {
+                if (btn) { btn.textContent = 'GUARDAR TODO'; btn.disabled = false; }
             }
         }
     </script>
