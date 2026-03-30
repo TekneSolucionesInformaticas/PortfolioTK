@@ -3,7 +3,7 @@
    Inspiration: Seungmee Lee (Quality/Minimalism) & Alex Fisher (Layout/Forms)
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+/* Fonts loaded via <link> in HTML — no @import needed */
 
 :root {
     /* Colors */
@@ -64,6 +64,7 @@ body.synced .case-metrics {
 html {
     scroll-behavior: smooth;
     background-color: var(--bg-primary);
+    overflow-x: hidden;
 }
 
 body {
@@ -109,7 +110,7 @@ body::after {
 
 /* Typography */
 h1, h2, h3, h4 {
-    font-family: 'Space+Grotesk', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-weight: 500;
     letter-spacing: -0.04em;
     text-transform: uppercase;
@@ -119,6 +120,11 @@ a {
     text-decoration: none;
     color: inherit;
     transition: var(--transition);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 /* Alex Fisher Hero Layout */
@@ -190,6 +196,8 @@ a {
 
 .hero-main-content {
     z-index: 2;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .hero-ornament {
@@ -214,6 +222,8 @@ a {
     color: var(--text-muted);
     text-transform: uppercase;
     margin-top: 1rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Bottom Tech Decoration (Inspired by floral Alex Fisher border) */
@@ -299,6 +309,7 @@ a {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 500;
     line-height: 1.1;
+    overflow-wrap: anywhere;
 }
 
 .project-category {
@@ -441,6 +452,8 @@ a {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 var(--padding-x);
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* Floating WhatsApp Button */
@@ -797,7 +810,11 @@ a {
     .hero { padding: 1.5rem; }
     .hero-ornament { font-size: 0.75rem; letter-spacing: 0.5em; }
     .hero-title { font-size: clamp(2.8rem, 12vw, 5rem) !important; }
-    .hero-subtitle { font-size: 0.75rem; letter-spacing: 0.12em; }
+    .hero-subtitle { font-size: clamp(0.55rem, 3vw, 0.75rem); letter-spacing: 0.08em; }
+    .hero-main-content div[style*="letter-spacing"] {
+        font-size: 0.65rem !important;
+        letter-spacing: 0.08rem !important;
+    }
     .hero-decoration { height: 20vh; }
     .tech-plant { width: 8rem; }
 
@@ -837,8 +854,17 @@ a {
         gap: 3rem !important;
     }
 
+    /* --- Inline styled titles on servicios/contacto/proyectos headers --- */
+    header.container-large h1[style*="font-size"] {
+        font-size: clamp(2rem, 10vw, 4rem) !important;
+    }
+
     /* --- CASE STUDY PAGES --- */
-    .case-hero { padding: 8rem 0 3rem; }
+    .case-hero { padding: 8rem var(--padding-x) 3rem; }
+    .case-hero h1 {
+        font-size: clamp(1.8rem, 8vw, 3rem) !important;
+        letter-spacing: -0.02em;
+    }
     .case-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -913,6 +939,7 @@ a {
         font-size: 0.6rem !important;
         bottom: 1.5rem !important;
         letter-spacing: 0.15em !important;
+        padding: 0 1rem;
     }
 }
 
@@ -926,6 +953,8 @@ a {
     .project-name { font-size: clamp(1.1rem, 5vw, 1.5rem); }
     .case-metrics { grid-template-columns: 1fr; }
     .metric-card { padding: 1.25rem; }
+    .case-hero { padding-top: 7rem; }
+    .case-content h2 { font-size: clamp(1.35rem, 7vw, 1.8rem); }
 
     /* Tighter spacing on small phones */
     .service-block { padding: 3rem 0; gap: 2rem; }

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1. Try shared global JSON first (works on every device)
     let db = null;
     try {
-        const res = await fetch(basePath + 'data/site-content.json', { cache: 'no-store' });
+        const res = await fetch(basePath + 'data/site-content.json', { cache: 'default' });
         if (res.ok) db = await res.json();
     } catch (e) { /* ignore */ }
 

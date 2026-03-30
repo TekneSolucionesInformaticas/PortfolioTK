@@ -69,7 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.addEventListener('scroll', updateNavbar);
+    let navTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!navTicking) {
+            navTicking = true;
+            requestAnimationFrame(() => { updateNavbar(); navTicking = false; });
+        }
+    }, { passive: true });
     updateNavbar();
 
     /* --- Immediate Transitions (On Load) --- */
@@ -89,7 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    window.addEventListener('scroll', revealOnScroll);
+    window.revealOnScroll = revealOnScroll;
+    let revealTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!revealTicking) {
+            revealTicking = true;
+            requestAnimationFrame(() => { revealOnScroll(); revealTicking = false; });
+        }
+    }, { passive: true });
     revealOnScroll();
 
     /* --- Project List Hover Preview (Split-Screen) --- */
@@ -116,11 +129,20 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- Mouse Follow Vignette (Premium Detail) --- */
     const vignette = document.querySelector('.vignette');
     if (vignette) {
+        let vignetteTicking = false;
+        let lastMouse = null;
         window.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
-            vignette.style.background = `radial-gradient(circle at ${x}% ${y}%, transparent 40%, rgba(127, 29, 29, 0.15) 100%)`;
-        });
+            lastMouse = e;
+            if (!vignetteTicking) {
+                vignetteTicking = true;
+                requestAnimationFrame(() => {
+                    const x = (lastMouse.clientX / window.innerWidth) * 100;
+                    const y = (lastMouse.clientY / window.innerHeight) * 100;
+                    vignette.style.background = `radial-gradient(circle at ${x}% ${y}%, transparent 40%, rgba(127, 29, 29, 0.15) 100%)`;
+                    vignetteTicking = false;
+                });
+            }
+        }, { passive: true });
     }
 
     /* --- Smooth Internal Links --- */
