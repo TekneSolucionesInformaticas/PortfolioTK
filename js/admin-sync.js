@@ -107,8 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const t = document.getElementById('case-title') || document.querySelector('.case-hero h1 span');
             if (t) t.textContent = p.name;
             
-            const pd = document.getElementById('case-hero-desc') || document.querySelector('.case-hero p');
-            if (pd) pd.textContent = p.challenge.substring(0, 150) + "..."; // Fallback text
+            // Hero subtitle is static ("Diseñado y desarrollado por TEKNÉ") — no override needed
 
             const catEl = document.getElementById('case-cat');
             if (catEl) catEl.textContent = p.cat;
