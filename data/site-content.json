@@ -177,8 +177,8 @@
         "",
         ""
       ],
-      "challenge": "Texto desafío",
-      "solution": "Texto solución",
+      "challenge": "Sistema para gestionar y vender zapatos la cual tiene 2 sucursales.",
+      "solution": "Atlas POS es un sistema de punto de venta y gestión comercial para zapaterías, diseñado para trabajar tanto de forma local como con sincronización en la nube entre múltiples sucursales.\n\n¿Qué permite hacer?\nFacturar con comprobantes fiscales (Factura A y B) integrados con AFIP/ARCA.\nSeguir operando sin Internet, gracias a una base de datos local que sincroniza la información cuando vuelve la conexión.\nControlar el stock por modelo, talle y color, con alertas de stock mínimo.\nAdministrar cajas mediante aperturas, cierres, arqueos y registro de movimientos.\nGestionar clientes con datos fiscales, historial y búsqueda rápida.\nRegistrar ventas, cambios y devoluciones, actualizando automáticamente el stock.\nSincronizar información entre sucursales para mantener datos unificados.\nMódulos principales\nPunto de Venta (POS): ventas, múltiples medios de pago, descuentos, recargos, impresión de tickets y facturación electrónica.\nCaja y Sucursales: control diario de caja, ingresos, egresos y diferencias de arqueo.\nInventario: gestión de productos, precios, costos, marcas y stock por variantes.\nClientes: registro completo, búsqueda, desactivación de clientes y exportación de datos.\nHistorial y Postventa: consultas de ventas, cambios y devoluciones.\nSincronización en la nube: actualización automática de información entre todas las sucursales.",
       "m1": [
         "0",
         "LBL"
