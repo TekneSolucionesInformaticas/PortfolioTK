@@ -162,6 +162,31 @@
         "",
         ""
       ]
+    },
+    {
+      "id": "p-1782912880819",
+      "name": "SISTEMA DE GESTION Y VENTAS PARA TIENDAS (INDUMENTARIA, ZAPATERIA)",
+      "cat": "GESTION Y VENTAS",
+      "imgs": [
+        "img/remitos.png",
+        "img/hero-bg.png",
+        "img/app-movil.png"
+      ],
+      "captions": [
+        "",
+        "",
+        ""
+      ],
+      "challenge": "Texto desafío",
+      "solution": "Texto solución",
+      "m1": [
+        "0",
+        "LBL"
+      ],
+      "m2": [
+        "0",
+        "LBL"
+      ]
     }
   ]
 }
