@@ -62,6 +62,7 @@
         <div class="adm-nav-item active" onclick="nav('home')">INICIO</div>
         <div class="adm-nav-item" onclick="nav('services')">SERVICIOS</div>
         <div class="adm-nav-item" onclick="nav('projects')">PROYECTOS</div>
+        <div class="adm-nav-item" onclick="nav('logos')">MÁS PROYECTOS</div>
         <div class="adm-nav-item" onclick="nav('config')">CONFIGURACIÓN</div>
         
         <div style="margin-top: auto;">
@@ -79,6 +80,15 @@
                 <label>Título Logo</label><input type="text" id="h-title" oninput="db.home.title=this.value">
                 <label>Tagline</label><input type="text" id="h-tagline" oninput="db.home.tagline=this.value">
                 <label>Subtítulo</label><input type="text" id="h-subtitle" oninput="db.home.subtitle=this.value">
+            </div>
+            <div class="adm-card">
+                <h2>Sección "Nosotros"</h2>
+                <label>Texto (podés usar &lt;strong&gt; para resaltar)</label>
+                <textarea id="h-about" oninput="db.home.about=this.value"></textarea>
+            </div>
+            <div class="adm-card">
+                <h2>Franja de estadísticas</h2>
+                <div id="stats-list"></div>
             </div>
         </div>
 
@@ -139,18 +149,38 @@
             </div>
         </div>
 
+        <!-- MÁS PROYECTOS (logo tiles) -->
+        <div id="sec-logos" class="adm-section">
+            <h1>Más Proyectos</h1>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2rem;">Tarjetas de marca para proyectos sin galería completa — se muestran en la página de Proyectos.</p>
+            <div id="logo-list"></div>
+            <button class="adm-nav-item" onclick="addL()">+ AGREGAR TARJETA</button>
+        </div>
+
     </main>
 
     <script>
         const initialTemplate = { id: "", name: "Nombre Proyecto", cat: "Categoría", imgs: ["img/remitos.png", "img/hero-bg.png", "img/app-movil.png"], captions: ["", "", ""], challenge: "Texto desafío", solution: "Texto solución", m1: ["0", "LBL"], m2: ["0", "LBL"] };
         const defaultData = {
-            home: { title: "TEKNÉ", tagline: "SOLUCIONES TECNOLÓGICAS", subtitle: "SOFTWARE EXCLUSIVO PARA EMPRESAS" },
+            home: {
+                title: "TEKNÉ", tagline: "SOLUCIONES TECNOLÓGICAS", subtitle: "SOFTWARE EXCLUSIVO PARA EMPRESAS",
+                about: "Somos <strong>TEKNÉ</strong>: un equipo argentino con más de una década construyendo infraestructura, software y soporte técnico para empresas.",
+                stats: [ { value: "+10", label: "Años de trayectoria" }, { value: "+12", label: "Sistemas y apps desarrollados" }, { value: "24/7", label: "Soporte técnico" } ]
+            },
             services: [ { name: "WEB", desc: "...", img: "img/hero-bg.png" } ],
-            projects: [ { ...initialTemplate, id: 'remitos', name: 'SISTEMA DE REMITOS' } ]
+            projects: [ { ...initialTemplate, id: 'remitos', name: 'SISTEMA DE REMITOS' } ],
+            logoProjects: []
         };
 
         let db = JSON.parse(localStorage.getItem('tekne_v3')) || defaultData;
         let editingP = null;
+
+        // Backward-compat guard: older saved data may not have these additive fields yet.
+        function ensureDefaults() {
+            if (!db.home.stats) db.home.stats = JSON.parse(JSON.stringify(defaultData.home.stats));
+            if (!db.home.about) db.home.about = defaultData.home.about;
+            if (!db.logoProjects) db.logoProjects = [];
+        }
 
         async function bootstrapData() {
             const localDb = JSON.parse(localStorage.getItem('tekne_v3'));
@@ -188,11 +218,52 @@
         }
 
         function syncUI() {
+            ensureDefaults();
             document.getElementById('h-title').value = db.home.title;
             document.getElementById('h-tagline').value = db.home.tagline;
             document.getElementById('h-subtitle').value = db.home.subtitle;
+            document.getElementById('h-about').value = db.home.about;
             renderServs();
             renderProjs();
+            renderStats();
+            renderLogos();
+        }
+
+        function renderStats() {
+            const list = document.getElementById('stats-list');
+            list.innerHTML = db.home.stats.map((s, i) => `
+                <div style="display:grid; grid-template-columns: 1fr 2fr auto; gap: 1rem; align-items: end; margin-top: 1.5rem;">
+                    <div><label style="margin-top:0;">Valor</label><input type="text" value="${s.value}" oninput="db.home.stats[${i}].value=this.value"></div>
+                    <div><label style="margin-top:0;">Etiqueta</label><input type="text" value="${s.label}" oninput="db.home.stats[${i}].label=this.value"></div>
+                    <button class="danger-btn" style="margin-top:0;" onclick="db.home.stats.splice(${i},1); renderStats();">Quitar</button>
+                </div>
+            `).join('');
+            if (db.home.stats.length < 4) {
+                list.innerHTML += `<button class="adm-nav-item" style="border:1px dashed white; margin-top:1.5rem;" onclick="db.home.stats.push({value:'+0', label:'Nueva métrica'}); renderStats();">+ AGREGAR MÉTRICA</button>`;
+            }
+        }
+
+        function renderLogos() {
+            const list = document.getElementById('logo-list');
+            list.innerHTML = db.logoProjects.map((p, i) => `
+                <div class="adm-card">
+                    <label>Nombre</label><input type="text" value="${p.name || ''}" oninput="db.logoProjects[${i}].name=this.value">
+                    <label>Descripción</label><textarea style="height:6rem;" oninput="db.logoProjects[${i}].desc=this.value">${p.desc || ''}</textarea>
+                    <label>Tags de stack (separados por coma)</label>
+                    <input type="text" value="${(p.tags||[]).join(', ')}" oninput="db.logoProjects[${i}].tags=this.value.split(',').map(t=>t.trim()).filter(Boolean)">
+                    <label>Imagen (opcional — si no hay, se muestra con gradiente)</label>
+                    <div class="img-edit-box" style="max-width:260px;">
+                        <img src="${p.img || 'img/hero-bg.png'}" onclick="this.nextElementSibling.click()">
+                        <input type="file" onchange="hdlImg(this, (url)=> {db.logoProjects[${i}].img=url; renderLogos()})">
+                    </div>
+                    <button class="danger-btn" onclick="db.logoProjects.splice(${i},1); renderLogos();">Eliminar tarjeta</button>
+                </div>
+            `).join('');
+        }
+
+        function addL() {
+            db.logoProjects.push({ id: 'logo-' + Date.now(), name: 'NUEVO PROYECTO', desc: '', tags: [], accent: ['red','violet','blue'][db.logoProjects.length % 3] });
+            renderLogos();
         }
 
         function renderServs() {

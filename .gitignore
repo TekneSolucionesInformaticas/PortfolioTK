@@ -1,0 +1,8 @@
+.claude/
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+
+# Stray locked file from a one-off local mishap (Windows AV lock) — safe to remove once unlocked
+/SistemaZapateria/

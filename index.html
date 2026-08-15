@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TEKNÉ | Soluciones Tecnológicas Premium</title>
     <meta name="description" content="TEKNÉ Soluciones Tecnológicas. Sistemas de alto nivel, aplicaciones móviles y software a medida para empresas.">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%237F1D1D%22 rx=%2210%22/><text y=%22.85em%22 x=%22.1em%22 font-size=%2260%22 font-family=%22Space+Grotesk%22 font-weight=%22700%22 fill=%22white%22>T</text></svg>">
 </head>
-<body class="no-scroll">
+<body>
 
     <!-- VIÑETA -->
     <div class="vignette"></div>
@@ -27,14 +27,14 @@
     </header>
 
     <!-- WHATSAPP FLOAT -->
-    <a href="https://wa.me/5493493404212" class="wpp-float pulse-button" target="_blank" aria-label="WhatsApp">
+    <a href="https://wa.me/5493493404212" class="wpp-float pulse-button" target="_blank" aria-label="WhatsApp" data-magnetic>
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 
     <!-- SECCIÓN HERO -->
     <section class="hero" style="cursor: default;">
         <div class="hero-bg"></div>
-        
+
         <div class="hero-main-content">
             <div class="hero-ornament">✦ ✧ ✦</div>
             <h1 class="hero-title reveal-text">
@@ -61,11 +61,75 @@
             <div class="tech-plant" style="transform: skew(10deg); height: 70%;"></div>
             <div class="tech-plant" style="transform: skew(-15deg); height: 90%;"></div>
         </div>
+
+        <div class="scroll-cue"><span>Scroll</span><span class="scroll-cue-line"></span></div>
     </section>
 
-    <!-- FOOTER MINIMIALISTA -->
-    <footer style="position: fixed; bottom: 3rem; width: 100%; text-align: center; opacity: 0.3; pointer-events: none; font-size: 0.7rem; letter-spacing: 0.3em;">
-        © 2026 TEKNÉ — ARGENTINA (GMT-3)
+    <!-- QUÉ HACEMOS -->
+    <section class="home-section container-large">
+        <div class="home-section-head" data-reveal>
+            <div class="section-label">Qué hacemos</div>
+            <h2 class="page-title" style="font-size: var(--fs-h2);">Software que mueve empresas reales</h2>
+        </div>
+        <div class="home-services-grid">
+            <div class="home-service-card" data-reveal><img src="img/hero-bg.png" alt="Desarrollo Web"><h3>DESARROLLO WEB</h3><p>Sitios y sistemas web de alto rendimiento.</p></div>
+            <div class="home-service-card" data-reveal style="transition-delay:0.1s;"><img src="img/app-movil.png" alt="Apps Móviles"><h3>APPS MÓVILES</h3><p>Gestión operativa desde el bolsillo.</p></div>
+            <div class="home-service-card" data-reveal style="transition-delay:0.2s;"><img src="img/remitos.png" alt="Sistemas a Medida"><h3>SISTEMAS A MEDIDA</h3><p>ERP y paneles diseñados para tu operación.</p></div>
+        </div>
+    </section>
+
+    <!-- TRABAJO DESTACADO -->
+    <section class="home-section container-large">
+        <div class="home-section-head" data-reveal style="display:flex; align-items:flex-end; justify-content:space-between; gap:2rem; flex-wrap:wrap;">
+            <div>
+                <div class="section-label">Trabajo destacado</div>
+                <h2 class="page-title" style="font-size: var(--fs-h2);">Proyectos en producción</h2>
+            </div>
+            <a href="proyectos.html" class="hero-nav-item" style="color:var(--primary); white-space:nowrap;">Ver todos ↗</a>
+        </div>
+        <div class="home-work-grid">
+            <a href="proyectos.html" class="home-work-card" data-reveal data-tilt><div class="home-work-media"><img src="img/remitos.png" alt="Sistema de Remitos"></div><div class="home-work-body"><span class="home-work-cat">Logística</span><h3 class="home-work-name">SISTEMA DE REMITOS</h3></div></a>
+            <a href="proyectos.html" class="home-work-card" data-reveal data-tilt style="transition-delay:0.1s;"><div class="home-work-media"><img src="img/app-movil.png" alt="App Móvil Corporativa"></div><div class="home-work-body"><span class="home-work-cat">Field Ops</span><h3 class="home-work-name">APP MÓVIL CORPORATIVA</h3></div></a>
+            <a href="proyectos.html" class="home-work-card" data-reveal data-tilt style="transition-delay:0.2s;"><div class="home-work-media"><img src="img/hero-bg.png" alt="Más proyectos"></div><div class="home-work-body"><span class="home-work-cat">Tecno</span><h3 class="home-work-name">VER MÁS CASOS</h3></div></a>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" data-reveal>
+        <div class="marquee-track">
+            <span>Logística</span><span>Retail</span><span>Industria 4.0</span><span>Gastronomía</span><span>Fitness</span><span>Seguros</span><span>Eventos</span><span>Impresión 3D</span>
+            <span>Logística</span><span>Retail</span><span>Industria 4.0</span><span>Gastronomía</span><span>Fitness</span><span>Seguros</span><span>Eventos</span><span>Impresión 3D</span>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <section class="home-section container-large">
+        <div class="stats-strip">
+            <div class="stat-item" data-reveal-blur><span class="stat-value" data-count="+10">0</span><span class="stat-label">Años de trayectoria</span></div>
+            <div class="stat-item" data-reveal-blur style="transition-delay:0.1s;"><span class="stat-value" data-count="+12">0</span><span class="stat-label">Sistemas y apps desarrollados</span></div>
+            <div class="stat-item" data-reveal-blur style="transition-delay:0.2s;"><span class="stat-value" data-count="24/7">0</span><span class="stat-label">Soporte técnico</span></div>
+        </div>
+    </section>
+
+    <!-- NOSOTROS -->
+    <section class="home-section container-large">
+        <div class="about-teaser" data-reveal>
+            <div class="section-label">Nosotros</div>
+            <p>Somos <strong>TEKNÉ</strong>: un equipo argentino con más de una década construyendo infraestructura, software y soporte técnico para empresas. Cada sistema que ves acá está en producción, resolviendo un problema real de un cliente real.</p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-band container-large">
+        <h2 data-reveal>¿Impulsamos tu empresa?</h2>
+        <a href="contacto.html" class="hero-nav-item cta-link" data-reveal data-magnetic>Hablemos hoy ↗</a>
+    </section>
+
+    <footer class="footer-tekne">
+        <div class="container-large">
+            <h2 data-reveal>TEKNÉ</h2>
+            <p class="text-dim">© 2026 TEKNÉ — Argentina (GMT-3)</p>
+        </div>
     </footer>
 
     <script src="js/script.js"></script>
