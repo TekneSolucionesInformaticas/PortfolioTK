@@ -56,20 +56,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         }
 
-        // 2c. Featured work grid — first 3 real projects
-        const workGrid = document.querySelector('.home-work-grid');
-        if (workGrid && db.projects && db.projects.length) {
-            workGrid.innerHTML = db.projects.slice(0, 3).map(p => {
+        // 2c. List-hero — giant diagonal stack of every real project
+        const listStack = document.querySelector('.list-hero-stack');
+        if (listStack && db.projects && db.projects.length) {
+            listStack.innerHTML = db.projects.map((p, i) => {
                 const isLegacy = ['remitos', 'app-movil'].includes(p.id);
                 const url = isLegacy ? `proyectos/${p.id}.html` : `proyectos/detalle.html?id=${p.id}`;
                 return `
-                    <a href="${url}" class="home-work-card" data-reveal data-tilt>
-                        <div class="home-work-media"><img src="${resolveImg(p.imgs[0])}" alt="${p.name}" loading="lazy" decoding="async"></div>
-                        <div class="home-work-body">
-                            <span class="home-work-cat">${p.cat || ''}</span>
-                            <h3 class="home-work-name">${p.name}</h3>
-                            ${p.m1 && p.m1[0] ? `<div class="home-work-metric"><strong>${p.m1[0]}</strong> ${p.m1[1] || ''}</div>` : ''}
-                        </div>
+                    <a href="${url}" class="list-hero-item reveal-text" data-image="${resolveImg(p.imgs[0])}">
+                        <span class="list-hero-tick">${p.cat || ''}</span>
+                        <span class="list-hero-name" style="transition-delay:${0.04 * i}s;">${p.name}</span>
                     </a>
                 `;
             }).join('');
@@ -156,6 +152,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             pc.innerHTML = h;
         }
 
+        // Sidebar category list — real categories pulled from the actual projects, not a stale hardcoded set
+        const catList = document.getElementById('projects-cat-list');
+        if (catList && db.projects) {
+            const cats = [...new Set(db.projects.map(p => p.cat).filter(Boolean))];
+            if (cats.length) {
+                catList.innerHTML = cats.map(c => `<p class="text-muted">${c}</p>`).join('');
+            }
+        }
+
         // "Más Proyectos" logo tiles on the proyectos page
         const logoGrid = document.querySelector('.logo-tiles-grid');
         if (logoGrid && db.logoProjects && db.logoProjects.length) {
@@ -237,6 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Trigger reveal & previews
     if (window.revealOnScroll) window.revealOnScroll();
     if (window.initProjectPreviews) window.initProjectPreviews();
+    if (window.initListHero) window.initListHero();
 
     // Mark body as synced so CSS can reveal hidden sections
     document.body.classList.add('synced');

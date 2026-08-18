@@ -84,7 +84,7 @@ main.container-large > .service-block,
 .case-content,
 .case-metrics,
 .home-services-grid,
-.home-work-grid,
+.list-hero-stack,
 .logo-tiles-grid {
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -95,7 +95,7 @@ body.synced .case-gallery,
 body.synced .case-content,
 body.synced .case-metrics,
 body.synced .home-services-grid,
-body.synced .home-work-grid,
+body.synced .list-hero-stack,
 body.synced .logo-tiles-grid {
     opacity: 1;
 }
@@ -125,6 +125,12 @@ body {
 body.no-scroll {
     overflow: hidden;
 }
+
+/* Text-color utilities — used throughout every page's markup but were
+   never actually defined, so all "muted"/"dim" copy was silently
+   rendering at full brightness instead of being de-emphasized. */
+.text-muted { color: var(--text-muted); }
+.text-dim { color: var(--text-dim); }
 
 /* Noise overlay (Seungmee Lee style) */
 body::after {
@@ -157,9 +163,22 @@ body::after {
 /* Typography */
 h1, h2, h3, h4 {
     font-family: 'Space Grotesk', sans-serif;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: -0.04em;
     text-transform: uppercase;
+}
+
+/* Big statement headings share the same heavy display face as the hero for a consistent, confident feel */
+.case-content h2,
+.service-info h2,
+.cta-band h2,
+.footer-tekne h2,
+.home-section-head h2,
+.project-name,
+.list-hero-name {
+    font-family: 'Archivo Black', 'Space Grotesk', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
 }
 
 a {
@@ -256,10 +275,12 @@ img {
 }
 
 .hero-title {
+    font-family: 'Archivo Black', 'Space Grotesk', sans-serif;
     font-size: clamp(3.5rem, 12vw, 8rem);
     line-height: 0.9;
     margin-bottom: 0.5rem;
-    font-weight: 600;
+    font-weight: 400;
+    letter-spacing: -0.02em;
 }
 
 .hero-subtitle {
@@ -293,6 +314,133 @@ img {
     clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     filter: blur(40px);
     opacity: 0.3;
+}
+
+/* =============================================
+   LIST HERO — giant diagonal project stack (home)
+   ============================================= */
+.list-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    padding-top: 9rem;
+}
+
+.list-hero-glow {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+}
+
+.list-hero-glow img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(60px) saturate(0.7) brightness(0.45);
+}
+
+.list-hero-glow.active {
+    opacity: 0.4;
+}
+
+.list-hero-stack-wrap {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    padding: 2rem 2vw;
+}
+
+.list-hero-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: clamp(0.75rem, 1.4vw, 1.75rem);
+    transform: rotate(-8deg);
+    transform-origin: right center;
+}
+
+.list-hero-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 1.25rem;
+}
+
+.list-hero-tick {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding-top: 0.6em;
+    transition: color 0.4s ease;
+}
+
+.list-hero-tick::before {
+    content: '';
+    width: 1px;
+    height: 2.2em;
+    background: var(--primary);
+    transform: rotate(25deg);
+    opacity: 0.7;
+}
+
+.list-hero-name {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.6rem, 4.2vw, 4.5rem);
+    line-height: 1.02;
+    color: var(--text-main);
+    text-transform: uppercase;
+    text-align: right;
+    max-width: 66vw;
+    transition: color 0.4s ease;
+}
+
+.list-hero-item:hover .list-hero-name,
+.list-hero-item:hover .list-hero-tick {
+    color: var(--primary);
+}
+
+.list-hero-footer {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 3rem var(--padding-x) 4rem;
+}
+
+.list-hero-wordmark {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.list-hero-wordmark .hero-logo {
+    font-size: 1.4rem;
+}
+
+.list-hero-wordmark p {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
 }
 
 /* Project List (Split Screen Layout - Premium Mastery) */
@@ -335,6 +483,11 @@ img {
     transition: var(--transition);
 }
 
+.project-item > div {
+    min-width: 0;
+    flex: 1;
+}
+
 .project-item:first-child { border-top: 1px solid var(--border-color); }
 
 .project-item:hover {
@@ -348,14 +501,20 @@ img {
     font-size: 0.8rem;
     color: var(--text-dim);
     margin-right: 2rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    align-self: flex-start;
 }
 
 .project-name {
-    font-size: 3.5rem;
+    font-size: clamp(1.8rem, 3.2vw, 3.5rem);
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 500;
     line-height: 1.1;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    min-width: 0;
 }
 
 .project-category {
@@ -414,11 +573,13 @@ img {
 .reveal-text > span {
     display: inline-block;
     transform: translateY(110%);
-    transition: transform 1.2s cubic-bezier(0.2, 1, 0.2, 1);
+    filter: blur(7px);
+    transition: transform 1.2s cubic-bezier(0.2, 1, 0.2, 1), filter 0.9s ease;
 }
 
 .revealed span {
     transform: translateY(0);
+    filter: blur(0);
 }
 
 /* Services Section Enhancement */
@@ -974,84 +1135,6 @@ img {
 }
 
 /* =============================================
-   HOME — FEATURED WORK
-   ============================================= */
-.home-work-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-}
-
-.home-work-card {
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background: var(--bg-secondary);
-    transition: var(--transition);
-    position: relative;
-    perspective: 1000px;
-}
-
-.home-work-card:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-6px);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-}
-
-.home-work-media {
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    background: linear-gradient(135deg, var(--bg-secondary), rgba(127,29,29,0.25));
-}
-
-.home-work-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.75;
-    transition: var(--transition);
-}
-
-.home-work-card:hover .home-work-media img {
-    opacity: 1;
-    transform: scale(1.05);
-}
-
-.home-work-body {
-    padding: var(--space-3);
-}
-
-.home-work-cat {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    color: var(--primary);
-    text-transform: uppercase;
-}
-
-.home-work-name {
-    font-size: 1.35rem;
-    margin-top: 0.5rem;
-    line-height: 1.15;
-}
-
-.home-work-metric {
-    margin-top: 1.5rem;
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    color: var(--text-dim);
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-.home-work-metric strong {
-    font-family: 'Space Grotesk', sans-serif;
-    color: var(--text-main);
-    font-size: 1.1rem;
-}
-
-/* =============================================
    STATS STRIP
    ============================================= */
 .stats-strip {
@@ -1109,32 +1192,105 @@ img {
 }
 
 /* =============================================
-   CTA BAND
+   INTERACTIVE HEAD
    ============================================= */
-.cta-band {
-    padding: var(--space-7) 0;
-    text-align: center;
-    position: relative;
+.interactive-head-wrap {
+    margin-top: var(--space-5);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
 }
 
-.cta-band::before {
-    content: '';
+.interactive-head-mount {
+    position: relative;
+    width: 100%;
+    height: 560px;
+}
+
+.interactive-head-mount three-d-stage {
+    width: 100%;
+    height: 100%;
+}
+
+.head-loading {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 100%, rgba(127,29,29,0.18), transparent 65%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     pointer-events: none;
-    z-index: -1;
+}
+
+.head-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(5, 7, 13, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-hover);
+    color: var(--text-main);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-pill);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.head-hint .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: head-hint-pulse 1.6s ease-out infinite;
+}
+
+@keyframes head-hint-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.55); }
+    70% { box-shadow: 0 0 0 9px rgba(229, 57, 53, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+}
+
+/* =============================================
+   CTA BAND
+   ============================================= */
+/* A full-bleed solid block, not another moody gradient — commits fully to
+   the brand red the way the reference commits fully to its accent color. */
+.cta-band {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: var(--space-7) var(--padding-x);
+    text-align: center;
+    position: relative;
+    background: var(--primary);
 }
 
 .cta-band h2 {
     font-size: var(--fs-h2);
     margin-bottom: 2rem;
+    color: var(--bg-primary);
 }
 
 .cta-band .cta-link {
-    color: var(--primary);
+    color: var(--bg-primary);
     font-size: 1.2rem;
     letter-spacing: 0.1em;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
 }
 
 /* =============================================
@@ -1342,6 +1498,7 @@ img {
     header.container-large p {
         font-size: 1rem !important;
         margin-top: 1.25rem !important;
+        max-width: 100% !important;
     }
 
     /* --- Main content areas --- */
@@ -1486,14 +1643,25 @@ img {
         padding: 0 1rem;
     }
 
+    /* --- LIST HERO --- */
+    .list-hero { min-height: auto; padding-top: 6.5rem; }
+    .list-hero-stack-wrap { padding: 1.5rem var(--padding-x) 0; justify-content: flex-start; }
+    .list-hero-stack { transform: none; align-items: flex-start; width: 100%; gap: 1.75rem; }
+    .list-hero-item { flex-direction: column-reverse; align-items: flex-start; gap: 0.4rem; }
+    .list-hero-name { font-size: clamp(1.5rem, 8vw, 2.5rem); text-align: left; max-width: 100%; }
+    .list-hero-tick { padding-top: 0; }
+    .list-hero-tick::before { display: none; }
+    .list-hero-footer { padding: 2rem var(--padding-x) 3rem; }
+
     /* --- HOME SECTIONS --- */
     .home-section { padding: var(--space-6) 0; }
     .home-section-head { margin-bottom: var(--space-4); }
     .home-services-grid { grid-template-columns: 1fr; }
-    .home-work-grid { grid-template-columns: 1fr; gap: 1.5rem; }
     .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
     .stat-item { border-left: none; padding: 0; }
     .about-teaser p { font-size: 1.35rem; }
+    .interactive-head-mount { height: 400px; }
+    .head-hint { font-size: 0.68rem; padding: 0.6rem 1rem; white-space: normal; text-align: center; max-width: 85%; }
     .cta-band { padding: var(--space-6) 0; }
     .marquee span { font-size: 0.9rem; }
     .scroll-cue { display: none; }

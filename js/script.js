@@ -134,6 +134,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initProjectPreviews();
 
+    /* --- List Hero Hover Glow (giant diagonal project stack on home) --- */
+    window.initListHero = () => {
+        const items = document.querySelectorAll('.list-hero-item');
+        const glow = document.getElementById('list-hero-glow');
+        const glowImg = document.getElementById('list-hero-glow-img');
+        if (!items.length || !glow || !glowImg) return;
+
+        items.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const imgUrl = item.getAttribute('data-image');
+                if (imgUrl) {
+                    glowImg.src = imgUrl;
+                    glow.classList.add('active');
+                }
+            });
+            item.addEventListener('mouseleave', () => {
+                glow.classList.remove('active');
+            });
+        });
+    };
+
+    initListHero();
+
     /* --- Animated Stat Counters --- */
     const animateCounter = (el) => {
         const raw = el.getAttribute('data-count') || el.textContent;
