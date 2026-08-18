@@ -1443,6 +1443,24 @@ img {
 }
 
 /* =============================================
+   PAGE TRANSITION OVERLAY
+   ============================================= */
+.page-transition-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease-out-expo);
+}
+
+.page-transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* =============================================
    LIGHTBOX NAV
    ============================================= */
 .lightbox-nav {

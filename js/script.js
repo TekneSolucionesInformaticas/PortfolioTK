@@ -264,20 +264,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* --- Parallax hero background --- */
-    const heroBg = document.querySelector('.hero-bg');
-    if (heroBg && !prefersReducedMotion) {
-        let parallaxTicking = false;
-        window.addEventListener('scroll', () => {
-            if (!parallaxTicking) {
-                parallaxTicking = true;
-                requestAnimationFrame(() => {
-                    const offset = Math.min(window.scrollY * 0.15, 60);
-                    heroBg.style.transform = `translateY(${offset}px)`;
-                    parallaxTicking = false;
-                });
-            }
+    /* --- List-hero mouse parallax: the diagonal stack subtly tracks the cursor,
+       layered on top of its static -8deg rotation, lerped for a fluid feel --- */
+    const listHeroStack = document.querySelector('.list-hero-stack');
+    const listHeroSection = document.querySelector('.list-hero');
+    const isWideViewport = window.matchMedia('(min-width: 769px)').matches;
+
+    if (listHeroStack && listHeroSection && !prefersReducedMotion && canHover && isWideViewport) {
+        let tiltTargetX = 0, tiltTargetY = 0;
+        let tiltCurrentX = 0, tiltCurrentY = 0;
+
+        listHeroSection.addEventListener('mousemove', (e) => {
+            const r = listHeroSection.getBoundingClientRect();
+            tiltTargetX = ((e.clientX - r.left) / r.width - 0.5) * 2;
+            tiltTargetY = ((e.clientY - r.top) / r.height - 0.5) * 2;
         }, { passive: true });
+
+        listHeroSection.addEventListener('mouseleave', () => {
+            tiltTargetX = 0;
+            tiltTargetY = 0;
+        });
+
+        const tiltLoop = () => {
+            tiltCurrentX += (tiltTargetX - tiltCurrentX) * 0.055;
+            tiltCurrentY += (tiltTargetY - tiltCurrentY) * 0.055;
+            const extraRotate = tiltCurrentX * 2.4;
+            const shiftX = tiltCurrentX * 12;
+            const shiftY = tiltCurrentY * 16;
+            listHeroStack.style.transform = `rotate(${(-8 + extraRotate).toFixed(2)}deg) translate(${shiftX.toFixed(1)}px, ${shiftY.toFixed(1)}px)`;
+            requestAnimationFrame(tiltLoop);
+        };
+        requestAnimationFrame(tiltLoop);
+    }
+
+    /* --- Page transitions: a smooth fade-to-background instead of a hard cut
+       when navigating to another internal page --- */
+    if (!prefersReducedMotion) {
+        const pageOverlay = document.createElement('div');
+        pageOverlay.className = 'page-transition-overlay';
+        document.body.appendChild(pageOverlay);
+
+        document.addEventListener('click', (e) => {
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            const link = e.target.closest('a[href]');
+            if (!link) return;
+
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+            if (link.target === '_blank' || link.hasAttribute('download')) return;
+
+            let url;
+            try { url = new URL(href, window.location.href); } catch (err) { return; }
+            if (url.origin !== window.location.origin) return;
+            if (url.pathname === window.location.pathname && url.hash) return;
+
+            e.preventDefault();
+            pageOverlay.classList.add('active');
+            setTimeout(() => { window.location.href = href; }, 380);
+        });
     }
 
     /* --- Scroll cue --- */
