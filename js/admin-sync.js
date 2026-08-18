@@ -102,84 +102,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 3. SERVICES LIST (servicios.html)
-    if (window.location.pathname.includes('servicios.html')) {
-        const sc = document.querySelector('main.container-large');
-        if (sc && db.services) {
-            let h = '';
-            db.services.forEach((s, i) => {
-                const odd = i % 2 !== 0;
-                h += `
-                    <section class="service-block">
-                        ${!odd ? `
-                            <div class="service-info" data-reveal>
-                                <h2>${s.name}</h2><p>${s.desc}</p>
-                            </div>
-                            <div class="service-image" data-reveal data-tilt style="transition-delay: 0.2s;"><img src="${resolveImg(s.img)}" alt="${s.name || ''}" loading="lazy" decoding="async"></div>
-                        ` : `
-                            <div class="service-image" data-reveal data-tilt><img src="${resolveImg(s.img)}" alt="${s.name || ''}" loading="lazy" decoding="async"></div>
-                            <div class="service-info" data-reveal style="transition-delay: 0.2s;">
-                                <h2>${s.name}</h2><p>${s.desc}</p>
-                            </div>
-                        `}
-                    </section>
-                `;
-            });
-            sc.innerHTML = h;
-        }
-    }
-
-    // 4. PROJECTS LISTING (proyectos.html)
-    if (window.location.pathname.includes('proyectos.html')) {
-        const pc = document.querySelector('.projects-list');
-        if (pc && db.projects) {
-            let h = '';
-            db.projects.forEach((p, i) => {
-                // Determine the correct URL: use specific file for legacy, or detalle.html for new ones
-                const isLegacy = ['remitos', 'app-movil'].includes(p.id);
-                const projectUrl = isLegacy ? `proyectos/${p.id}.html` : `proyectos/detalle.html?id=${p.id}`;
-
-                h += `
-                    <a href="${projectUrl}" class="project-item" data-image="${resolveImg(p.imgs[0])}">
-                        <div style="display: flex; align-items: center;">
-                            <span class="project-index">0${i + 1}</span>
-                            <span class="project-name">${p.name}</span>
-                        </div>
-                    </a>
-                `;
-            });
-            h += `<div class="project-preview"><img id="project-preview-img" src="${resolveImg(db.projects[0]?.imgs[0])}" alt=""></div>`;
-            pc.innerHTML = h;
-        }
-
-        // Sidebar category list — real categories pulled from the actual projects, not a stale hardcoded set
-        const catList = document.getElementById('projects-cat-list');
-        if (catList && db.projects) {
-            const cats = [...new Set(db.projects.map(p => p.cat).filter(Boolean))];
-            if (cats.length) {
-                catList.innerHTML = cats.map(c => `<p class="text-muted">${c}</p>`).join('');
-            }
-        }
-
-        // "Más Proyectos" logo tiles on the proyectos page
-        const logoGrid = document.querySelector('.logo-tiles-grid');
-        if (logoGrid && db.logoProjects && db.logoProjects.length) {
-            logoGrid.innerHTML = db.logoProjects.map(p => `
-                <div class="logo-tile" data-reveal data-accent="${p.accent || 'red'}">
-                    ${p.img ? `<div class="logo-tile-media"><img src="${resolveImg(p.img)}" alt="${p.name}" loading="lazy" decoding="async"></div>` : ''}
-                    <div class="logo-tile-body">
-                        <h3 class="logo-tile-name">${p.name}</h3>
-                        <p class="logo-tile-desc">${p.desc || ''}</p>
-                    </div>
-                    <div class="logo-tile-tags">${(p.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
-                </div>
-            `).join('');
-        }
-    }
-
-    // 5. INTERNAL CASE STUDY HYDRATION (proyectos/*.html)
+    // 3. INTERNAL CASE STUDY HYDRATION (proyectos/*.html) — servicios.html and
+    // proyectos.html no longer exist as standalone pages; their content now
+    // lives inside the isHome block above (home-services-grid, logo-tiles-grid).
     const isDetallePage = window.location.pathname.includes('detalle.html');
-    const isLegacyProject = window.location.pathname.includes('proyectos/') && !window.location.pathname.includes('proyectos.html');
+    const isLegacyProject = window.location.pathname.includes('proyectos/') && !isDetallePage;
 
     if (isDetallePage || isLegacyProject) {
         let pId;
