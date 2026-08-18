@@ -248,15 +248,33 @@ img {
 }
 
 .hero-nav-item {
+    position: relative;
     font-size: 0.8rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-dim);
 }
 
+.hero-nav-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.4em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-out-expo);
+}
+
 .hero-nav-item:hover {
     color: var(--primary);
     transform: scale(1.05);
+}
+
+.hero-nav-item:hover::after {
+    transform: scaleX(1);
 }
 
 .hero-main-content {
@@ -580,11 +598,22 @@ img {
     position: relative;
 }
 
+/* GSAP drives this animation via yPercent when the animation engine loads
+   (js/script.js); this CSS is only the pre-paint hidden state and the
+   no-GSAP fallback (.revealed class), matching the spec's plain
+   overflow:hidden + y:100%->0% text-reveal technique — no blur here, that's
+   reserved for [data-reveal-blur] (stats). */
 .reveal-text > span {
     display: inline-block;
     transform: translateY(110%);
-    filter: blur(7px);
-    transition: transform 1.2s cubic-bezier(0.2, 1, 0.2, 1), filter 0.9s ease;
+}
+
+/* Only the no-GSAP fallback (.revealed class-toggle) needs a CSS transition here.
+   When GSAP drives this via yPercent, a stylesheet transition on the same
+   `transform` property fights every inline update GSAP writes, so it must be
+   scoped out whenever the GSAP engine is active (html.gsap-reveals, set in js/script.js). */
+html:not(.gsap-reveals) .reveal-text > span {
+    transition: transform 1.2s cubic-bezier(0.2, 1, 0.2, 1);
 }
 
 .revealed span {
@@ -1041,6 +1070,10 @@ img {
     opacity: 0;
     filter: blur(14px);
     transform: translateY(30px);
+}
+/* Fallback-only transition — see .reveal-text > span above for why this is
+   scoped out while GSAP (js/script.js) is driving the same properties. */
+html:not(.gsap-reveals) [data-reveal-blur] {
     transition: opacity 1s var(--ease-out-expo), filter 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
 }
 [data-reveal-blur].revealed {
@@ -1296,11 +1329,22 @@ img {
 }
 
 .cta-band .cta-link {
+    display: inline-block;
     color: var(--bg-primary);
     font-size: 1.2rem;
     letter-spacing: 0.1em;
     text-decoration: underline;
     text-underline-offset: 0.3em;
+    padding: 0.5em 1.1em;
+    border-radius: 2px;
+    transition: background 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo);
+}
+
+/* Color-invert hover: the reference's "text becomes a filled pill" treatment */
+.cta-band .cta-link:hover {
+    background: var(--bg-primary);
+    color: var(--primary);
+    text-decoration: none;
 }
 
 /* =============================================
@@ -1458,6 +1502,61 @@ img {
 .page-transition-overlay.active {
     opacity: 1;
     pointer-events: all;
+}
+
+/* =============================================
+   CUSTOM CURSOR — dot + lagging ring, mix-blend-mode: difference
+   ============================================= */
+html.has-custom-cursor,
+html.has-custom-cursor a,
+html.has-custom-cursor button,
+html.has-custom-cursor [data-magnetic],
+html.has-custom-cursor [data-tilt] {
+    cursor: none !important;
+}
+
+.cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    background: var(--text-main);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100000;
+    mix-blend-mode: difference;
+    transition: opacity 0.3s ease;
+}
+
+.cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--text-main);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    mix-blend-mode: difference;
+    transition: width 0.3s var(--ease-out-expo), height 0.3s var(--ease-out-expo), opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.cursor-ring.active {
+    width: 72px;
+    height: 72px;
+    border-color: var(--primary);
+}
+
+.cursor-ring.pressed {
+    width: 28px;
+    height: 28px;
+}
+
+@media (max-width: 768px) {
+    .cursor-dot, .cursor-ring { display: none; }
 }
 
 /* =============================================
