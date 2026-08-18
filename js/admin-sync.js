@@ -63,9 +63,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const isLegacy = ['remitos', 'app-movil'].includes(p.id);
                 const url = isLegacy ? `proyectos/${p.id}.html` : `proyectos/detalle.html?id=${p.id}`;
                 return `
-                    <a href="${url}" class="list-hero-item reveal-text" data-image="${resolveImg(p.imgs[0])}">
+                    <a href="${url}" class="list-hero-item" data-image="${resolveImg(p.imgs[0])}">
                         <span class="list-hero-tick">${p.cat || ''}</span>
-                        <span class="list-hero-name" style="transition-delay:${0.04 * i}s;">${p.name}</span>
+                        <span class="list-hero-name">${p.name}</span>
                     </a>
                 `;
             }).join('');

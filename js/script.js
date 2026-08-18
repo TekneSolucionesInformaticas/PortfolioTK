@@ -4,9 +4,25 @@
  * plain-CSS/IntersectionObserver fallback if either CDN fails to load.
  */
 
+/* =========================================================
+   LOAD CURTAIN — runs standalone, outside DOMContentLoaded, so it clears
+   reliably even if GSAP/Lenis fail to load. Holds for a short minimum
+   (so it never just flickers on a fast connection) and waits for web
+   fonts, then lets the CSS transition on body.loading fade it out.
+   ========================================================= */
+(function () {
+    const minHold = new Promise((resolve) => setTimeout(resolve, 500));
+    const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    Promise.all([minHold, fontsReady]).then(() => {
+        document.body.classList.remove('loading');
+    });
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Animations always play, regardless of the OS-level reduced-motion
+    // preference — explicit choice for this portfolio/showcase site.
+    const prefersReducedMotion = false;
     const canHover = window.matchMedia('(hover: hover)').matches;
     const isWideViewport = window.matchMedia('(min-width: 769px)').matches;
 
@@ -558,7 +574,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = document.querySelectorAll('.list-hero-item');
         const glow = document.getElementById('list-hero-glow');
         const glowImg = document.getElementById('list-hero-glow-img');
-        if (!items.length || !glow || !glowImg) return;
+        if (!items.length) return;
+
+        // Entrance: each row swings in — rotated and shifted from the right,
+        // fading and settling into place, pivoting toward the same right
+        // edge the diagonal stack itself rotates around. Later rows start
+        // first (a bottom-up stagger), matching the reference this hero is
+        // built after.
+        const freshItems = Array.from(items).filter(item => !item.hasAttribute('data-entrance-bound'));
+        freshItems.forEach((item, i) => {
+            item.setAttribute('data-entrance-bound', '1');
+            if (!hasGSAP) { item.style.opacity = '1'; return; }
+            gsap.fromTo(item, { opacity: 0, x: 90, rotate: 6 }, {
+                opacity: 1, x: 0, rotate: 0, duration: 1.2, ease: 'power3.out',
+                delay: 0.5 + (freshItems.length - 1 - i) * 0.12,
+                onStart: () => { item.style.willChange = 'transform, opacity'; },
+                onComplete: () => { item.style.willChange = 'auto'; },
+            });
+        });
+
+        if (!glow || !glowImg) return;
         items.forEach(item => {
             if (item.hasAttribute('data-glow-bound')) return;
             item.setAttribute('data-glow-bound', '1');

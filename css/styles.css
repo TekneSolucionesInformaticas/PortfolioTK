@@ -67,16 +67,6 @@
     }
 }
 
-/* Respect reduced-motion preference across the whole site */
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-}
-
 /* Anti-FOUC: hide dynamic sections until JS hydrates from JSON */
 .projects-list,
 main.container-large > .service-block,
@@ -124,6 +114,27 @@ body {
 
 body.no-scroll {
     overflow: hidden;
+}
+
+body.loading {
+    overflow: hidden;
+}
+
+/* Load curtain — plain full-viewport cover, fades out once js/script.js
+   clears body.loading (fonts ready + a short minimum hold so it never just
+   flickers). No spinner/percentage by design, matching the reference. */
+.load-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background-color: var(--bg-primary);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s var(--ease-out-expo, ease);
+}
+body.loading .load-curtain {
+    opacity: 1;
+    pointer-events: all;
 }
 
 /* Text-color utilities — used throughout every page's markup but were
@@ -1381,11 +1392,6 @@ html:not(.gsap-reveals) [data-reveal-blur] {
 @keyframes marquee-scroll {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .marquee-track { animation: none; }
-    .marquee { overflow-x: auto; }
 }
 
 /* =============================================
